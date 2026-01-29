@@ -1,6 +1,7 @@
 import { Component, NgZone, OnDestroy } from '@angular/core';
 
 type NotebookItem = {
+  index: number;
   title: string;
   details: string | null;
 };
@@ -34,10 +35,11 @@ export class AppComponent implements OnDestroy {
         this.notebooks = notebooks
           .map((n) => {
             if (!n || typeof n !== 'object') return null;
-            const nn = n as { title?: unknown; details?: unknown };
+            const nn = n as { index?: unknown; title?: unknown; details?: unknown };
+            if (typeof nn.index !== 'number' || !Number.isInteger(nn.index) || nn.index < 0) return null;
             if (typeof nn.title !== 'string') return null;
             const details = typeof nn.details === 'string' ? nn.details : null;
-            return { title: nn.title, details } satisfies NotebookItem;
+            return { index: nn.index, title: nn.title, details } satisfies NotebookItem;
           })
           .filter((n): n is NotebookItem => n !== null);
       });
@@ -52,6 +54,7 @@ export class AppComponent implements OnDestroy {
       {
         type: 'NLE_OPEN_NOTEBOOK',
         payload: {
+          index: nb.index,
           title: nb.title,
         },
       },
