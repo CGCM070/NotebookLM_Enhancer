@@ -16,6 +16,7 @@
 
         return {
           index,
+          key: `${index}:${title}`,
           title,
           details,
         };

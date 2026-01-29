@@ -1,0 +1,14 @@
+@if (tree.length === 0) {
+  <div class="p-2 text-xs text-slate-500">No folders yet.</div>
+} @else {
+  @for (node of tree; track node.folder.id) {
+    <app-folder-node
+      [node]="node"
+      [depth]="0"
+      (toggleFolder)="toggleFolder.emit($event)"
+      (createSubfolder)="createSubfolder.emit($event)"
+      (renameFolder)="renameFolder.emit($event)"
+      (deleteFolder)="deleteFolder.emit($event)"
+    />
+  }
+}

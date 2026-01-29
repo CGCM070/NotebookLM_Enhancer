@@ -1,0 +1,22 @@
+<div class="p-2" cdkDrag [cdkDragData]="notebook">
+  <div class="flex items-start justify-between gap-2">
+    <button type="button" class="min-w-0 text-left hover:underline" (click)="open.emit(notebook)">
+      <div class="truncate text-xs font-medium leading-4">{{ notebook.title }}</div>
+      @if (notebook.details) {
+        <div class="mt-0.5 text-[11px] text-slate-500">{{ notebook.details }}</div>
+      }
+    </button>
+
+    <select
+      class="shrink-0 rounded border border-slate-200 bg-white px-2 py-1 text-[11px]"
+      [value]="selectedFolderId ?? ''"
+      (change)="onSelectChanged($any($event.target).value)"
+      aria-label="Move notebook to folder"
+    >
+      <option value="">Unsorted</option>
+      @for (f of folders; track f.id) {
+        <option [value]="f.id">{{ f.name }}</option>
+      }
+    </select>
+  </div>
+</div>

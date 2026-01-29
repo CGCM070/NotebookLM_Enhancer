@@ -1,21 +1,70 @@
-<div class="h-full w-full bg-white p-3 text-slate-900">
+<div class="h-full w-full bg-white p-3 text-slate-900" cdkDropListGroup>
   <div class="flex items-center justify-between">
     <div class="text-sm font-semibold">NotebookLM Enhancer</div>
-    <div class="text-xs text-slate-500">{{ notebooks.length }} notebooks</div>
+    <div class="flex items-center gap-2">
+      <div class="text-xs text-slate-500">{{ notebooks.length }} notebooks</div>
+      <button
+        type="button"
+        class="rounded border border-slate-200 bg-white px-2 py-1 text-xs hover:bg-slate-50"
+        (click)="createFolder()"
+      >
+        + Folder
+      </button>
+    </div>
   </div>
 
-  <div class="mt-2 max-h-[220px] overflow-auto rounded border border-slate-200">
+  <div class="mt-2 rounded border border-slate-200">
+    <div class="border-b border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">Folders</div>
+    <div class="max-h-[92px] overflow-auto">
+      <app-folder-tree
+        [tree]="folderTree"
+        (toggleFolder)="toggleFolder($event)"
+        (createSubfolder)="createSubfolder($event)"
+        (renameFolder)="renameFolder($event)"
+        (deleteFolder)="deleteFolder($event)"
+      />
+    </div>
+  </div>
+
+  <div class="mt-2 rounded border border-slate-200">
+    <div class="border-b border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">
+      Notebooks
+    </div>
     @if (notebooks.length === 0) {
       <div class="p-3 text-xs text-slate-500">Esperando datos de la sidebar…</div>
     } @else {
-      <div class="divide-y divide-slate-200">
-        @for (nb of notebooks; track nb.index) {
-          <button type="button" class="block w-full p-2 text-left hover:bg-slate-50" (click)="openNotebook(nb)">
-            <div class="text-xs font-medium leading-4">{{ nb.title }}</div>
-            @if (nb.details) {
-              <div class="mt-0.5 text-[11px] text-slate-500">{{ nb.details }}</div>
+      <div class="max-h-[200px] overflow-auto">
+        @let folders = (folders$ | async) ?? [];
+        @let mapByKey = (notebookFolderByKey$ | async) ?? {};
+        @let mapByTitle = (notebookFolderByTitle$ | async) ?? {};
+
+        @for (sec of notebookSections; track sec.id ?? 'unsorted') {
+          <div class="border-b border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700">
+            <span class="whitespace-pre">{{ sec.name }}</span>
+            <span class="ml-1 font-normal text-slate-500">({{ sec.notebooks.length }})</span>
+          </div>
+
+          <div
+            class="divide-y divide-slate-200"
+            cdkDropList
+            [cdkDropListData]="{ targetFolderId: sec.id }"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="onNotebookDropped($event)"
+          >
+            @if (sec.notebooks.length === 0) {
+              <div class="px-2 py-2 text-xs text-slate-400">Drop here</div>
+            } @else {
+              @for (nb of sec.notebooks; track nb.key) {
+                <app-notebook-item
+                  [notebook]="nb"
+                  [folders]="folders"
+                  [selectedFolderId]="mapByKey[nb.key] ?? mapByTitle[nb.title] ?? null"
+                  (open)="openNotebook($event)"
+                  (setFolder)="setNotebookFolder($event.notebook, $event.folderId)"
+                />
+              }
             }
-          </button>
+          </div>
         }
       </div>
     }

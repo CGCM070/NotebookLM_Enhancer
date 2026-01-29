@@ -1,0 +1,55 @@
+<div class="flex items-center justify-between gap-2 py-1" [style.paddingLeft.px]="8 + depth * 12">
+  <div class="flex min-w-0 items-center gap-1">
+    @if (node.children.length > 0) {
+      <button
+        type="button"
+        class="h-5 w-5 rounded border border-slate-200 bg-white text-[11px] leading-4 hover:bg-slate-50"
+        (click)="toggleFolder.emit(node.folder)"
+        [attr.aria-label]="node.folder.collapsed ? 'Expand folder' : 'Collapse folder'"
+      >
+        {{ node.folder.collapsed ? '>' : 'v' }}
+      </button>
+    } @else {
+      <div class="h-5 w-5"></div>
+    }
+
+    <div class="min-w-0 truncate text-xs font-medium">{{ node.folder.name }}</div>
+  </div>
+
+  <div class="flex shrink-0 items-center gap-1">
+    <button
+      type="button"
+      class="rounded border border-slate-200 bg-white px-2 py-1 text-[11px] hover:bg-slate-50"
+      (click)="createSubfolder.emit(node.folder)"
+    >
+      + Sub
+    </button>
+    <button
+      type="button"
+      class="rounded border border-slate-200 bg-white px-2 py-1 text-[11px] hover:bg-slate-50"
+      (click)="renameFolder.emit(node.folder)"
+    >
+      Rename
+    </button>
+    <button
+      type="button"
+      class="rounded border border-slate-200 bg-white px-2 py-1 text-[11px] hover:bg-slate-50"
+      (click)="deleteFolder.emit(node.folder)"
+    >
+      Delete
+    </button>
+  </div>
+</div>
+
+@if (!node.folder.collapsed) {
+  @for (child of node.children; track child.folder.id) {
+    <app-folder-node
+      [node]="child"
+      [depth]="depth + 1"
+      (toggleFolder)="toggleFolder.emit($event)"
+      (createSubfolder)="createSubfolder.emit($event)"
+      (renameFolder)="renameFolder.emit($event)"
+      (deleteFolder)="deleteFolder.emit($event)"
+    />
+  }
+}

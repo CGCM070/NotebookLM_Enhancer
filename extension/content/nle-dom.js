@@ -52,7 +52,7 @@
       .nle-wrap { display: block; width: 100%; }
       .nle-frame {
         width: 100%;
-        height: 280px;
+        height: 340px;
         border: 0;
         display: block;
       }
