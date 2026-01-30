@@ -1,4 +1,4 @@
-<div class="group relative py-0.5" cdkDrag [cdkDragData]="notebook">
+<div class="group relative py-0.5" cdkDrag [cdkDragData]="notebook" (cdkDragEnded)="onDragEnded($event)">
   <!-- Minimal Drag Placeholder -->
   <div *cdkDragPlaceholder class="my-1 h-8 w-full rounded bg-[#3C4043] border border-[#5F6368] opacity-50"></div>
 
@@ -8,7 +8,7 @@
       <button
         type="button"
         class="flex h-7 w-7 items-center justify-center rounded text-[#9AA0A6] hover:bg-white/10 hover:text-[#E3E3E3]"
-        (click)="openMenu.emit(notebook); $event.stopPropagation()"
+        (click)="openMenu.emit({ notebook, x: $event.clientX, y: $event.clientY }); $event.stopPropagation()"
         aria-label="Opciones"
         title="Opciones"
       >

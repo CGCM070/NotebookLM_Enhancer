@@ -2,14 +2,16 @@
 
 <div
   class="group select-none"
-  [style.paddingLeft.px]="8 + depth * 12"
-  [attr.data-nle-drop-folder-id]="node.folder.id"
-  cdkDropList
-  [cdkDropListData]="dropData"
-  [cdkDropListSortingDisabled]="true"
-  (cdkDropListDropped)="onDropped($event)"
+  [style.paddingLeft.px]="8 + (depth > 6 ? 6 : depth) * 12"
 >
-  <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5">
+  <div
+    class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5"
+    cdkDropList
+    [cdkDropListData]="dropData"
+    [cdkDropListSortingDisabled]="true"
+    (cdkDropListDropped)="onDropped($event)"
+    [attr.data-nle-drop-folder-id]="node.folder.id"
+  >
     <div class="flex min-w-0 items-center gap-2">
       <!-- Chevron or Spacer -->
       @if (!node.children.length && notebooks.length === 0) {
@@ -71,7 +73,13 @@
   @if (!node.folder.collapsed) {
     <!-- Expanded Content -->
     <div class="ml-4 border-l border-[#3C4043] pl-2 transition-all">
-      <div class="space-y-0.5 py-1">
+      <div
+        class="space-y-0.5 py-1"
+        cdkDropList
+        [cdkDropListData]="dropData"
+        [cdkDropListSortingDisabled]="true"
+        [cdkDropListEnterPredicate]="onlySelfEnter"
+      >
         @for (nb of notebooks; track nb.key) {
           <app-notebook-item
             [notebook]="nb"

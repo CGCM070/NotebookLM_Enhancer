@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import type { NotebookDropListData } from './models/drag-drop.model';
 import type { Folder } from './models/folder.model';
 import type { FolderTreeNode } from './models/folder-tree-node.model';
+import type { NotebookMenuRequest } from './models/notebook-menu.model';
 import type { Notebook } from './models/notebook.model';
 import { FolderTreeComponent } from './components/folder-tree/folder-tree.component';
 import { NotebookItemComponent } from './components/notebook-item/notebook-item.component';
@@ -149,8 +150,12 @@ export class AppComponent implements OnDestroy {
   private async handleNativeDrop(nb: { key: string; title: string }, x: number, y: number): Promise<void> {
     const el = document.elementFromPoint(x, y);
     const target = el?.closest?.('[data-nle-drop-folder-id]') as HTMLElement | null;
-    const raw = target?.getAttribute('data-nle-drop-folder-id');
-    const folderId = raw && raw.trim() ? raw.trim() : null;
+    if (!target) return;
+
+    const raw = target.getAttribute('data-nle-drop-folder-id');
+    if (raw === null) return;
+
+    const folderId = raw.trim() ? raw.trim() : null;
     await this.folders.setNotebookFolder(nb.key, folderId, nb.title);
   }
 
@@ -210,30 +215,19 @@ export class AppComponent implements OnDestroy {
     );
   }
 
-  openNotebookMenu(nb: NotebookItem): void {
+  openNotebookMenu(req: NotebookMenuRequest): void {
     window.parent.postMessage(
       {
         type: 'NLE_OPEN_NOTE_MENU',
         payload: {
-          index: nb.index,
-          title: nb.title,
+          index: req.notebook.index,
+          title: req.notebook.title,
+          x: req.x,
+          y: req.y,
         },
       },
       '*'
     );
-  }
-
-  async moveInboxToFolder(folderId: string): Promise<void> {
-    const nextFolderId = folderId && folderId.trim() ? folderId.trim() : null;
-    if (!nextFolderId) return;
-
-    const folders = this.folders.folders$.value;
-    if (!folders.some((f) => f.id === nextFolderId)) return;
-
-    const items = this.unsortedNotebooks.map((nb) => ({ key: nb.key, title: nb.title }));
-    if (items.length === 0) return;
-
-    await this.folders.setNotebooksFolder(items, nextFolderId);
   }
 
   async createFolder(): Promise<void> {

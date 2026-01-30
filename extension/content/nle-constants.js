@@ -10,6 +10,7 @@
     messageTypeNotebooksSync: 'NLE_NOTEBOOKS_SYNC',
     messageTypeOpenNotebook: 'NLE_OPEN_NOTEBOOK',
     messageTypeOpenNotebookMenu: 'NLE_OPEN_NOTE_MENU',
+    messageTypeDeleteNotebook: 'NLE_DELETE_NOTEBOOK',
     messageTypeNativeDrop: 'NLE_NATIVE_DROP',
 
     selectors: {

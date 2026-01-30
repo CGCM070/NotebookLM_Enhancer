@@ -56,22 +56,7 @@
             <div class="font-normal">Inbox</div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <div class="text-xs text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
-
-            <select
-              #bulkInbox
-              class="appearance-none cursor-pointer rounded border border-[#5F6368] bg-transparent py-0.5 pl-1.5 pr-5 text-[10px] text-[#9AA0A6] hover:border-[#E3E3E3] hover:text-[#E3E3E3] focus:border-[#8AB4F8] focus:outline-none"
-              aria-label="Mover todo"
-              title="Mover todo"
-              (change)="moveInboxToFolder(bulkInbox.value); bulkInbox.value = ''"
-            >
-              <option value="" class="bg-[#202124]">Mover todo…</option>
-              @for (f of folderList; track f.id) {
-                <option [value]="f.id" class="bg-[#202124]">{{ f.name }}</option>
-              }
-            </select>
-          </div>
+          <div class="text-xs text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
         </div>
 
         <div
@@ -110,4 +95,5 @@
     </div>
     }
   </div>
+
 </div>

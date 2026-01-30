@@ -1,2 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+
+  /* Minimal dark scrollbar (Chromium + Firefox). */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(154, 160, 166, 0.45) transparent;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+/* Chromium scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(154, 160, 166, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(232, 234, 237, 0.45);
+}

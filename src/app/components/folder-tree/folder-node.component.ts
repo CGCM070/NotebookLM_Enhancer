@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import type { CdkDragDrop } from '@angular/cdk/drag-drop';
+import type { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 
 import type { NotebookDropListData } from '../../models/drag-drop.model';
 import type { Folder } from '../../models/folder.model';
 import type { FolderTreeNode } from '../../models/folder-tree-node.model';
+import type { NotebookMenuRequest } from '../../models/notebook-menu.model';
 import type { Notebook } from '../../models/notebook.model';
 import { NotebookItemComponent } from '../notebook-item/notebook-item.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -31,12 +32,16 @@ export class FolderNodeComponent {
   @Output() deleteFolder = new EventEmitter<Folder>();
 
   @Output() openNotebook = new EventEmitter<NotebookItem>();
-  @Output() openNotebookMenu = new EventEmitter<NotebookItem>();
+  @Output() openNotebookMenu = new EventEmitter<NotebookMenuRequest>();
   @Output() droppedNotebook = new EventEmitter<CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>>();
 
   get dropData(): NotebookDropListData {
     return { targetFolderId: this.node.folder.id };
   }
+
+  readonly onlySelfEnter = (drag: CdkDrag, drop: CdkDropList): boolean => {
+    return drag.dropContainer === drop;
+  };
 
   onDropped(event: CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>): void {
     this.droppedNotebook.emit(event);
