@@ -8,7 +8,8 @@
   [notebookFolderByKey]="notebookFolderByKey" [notebookFolderByTitle]="notebookFolderByTitle"
   (toggleFolder)="toggleFolder.emit($event)" (createSubfolder)="createSubfolder.emit($event)"
   (renameFolder)="renameFolder.emit($event)" (deleteFolder)="deleteFolder.emit($event)"
-  (openNotebook)="openNotebook.emit($event)" (setNotebookFolder)="setNotebookFolder.emit($event)"
+  (openNotebook)="openNotebook.emit($event)"
+  (openNotebookMenu)="openNotebookMenu.emit($event)"
   (droppedNotebook)="droppedNotebook.emit($event)" />
 }
 }

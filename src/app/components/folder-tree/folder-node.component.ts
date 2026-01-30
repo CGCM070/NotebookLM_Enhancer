@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 
+import type { NotebookDropListData } from '../../models/drag-drop.model';
 import type { Folder } from '../../models/folder.model';
 import type { FolderTreeNode } from '../../models/folder-tree-node.model';
 import type { Notebook } from '../../models/notebook.model';
 import { NotebookItemComponent } from '../notebook-item/notebook-item.component';
-import { DragDropModule, type CdkDragDrop } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 type NotebookItem = Notebook;
 
@@ -29,41 +31,14 @@ export class FolderNodeComponent {
   @Output() deleteFolder = new EventEmitter<Folder>();
 
   @Output() openNotebook = new EventEmitter<NotebookItem>();
-  @Output() setNotebookFolder = new EventEmitter<{ notebook: NotebookItem; folderId: string | null }>();
-  @Output() droppedNotebook = new EventEmitter<CdkDragDrop<any>>();
+  @Output() openNotebookMenu = new EventEmitter<NotebookItem>();
+  @Output() droppedNotebook = new EventEmitter<CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>>();
 
-  onDropped(event: CdkDragDrop<any>): void {
+  get dropData(): NotebookDropListData {
+    return { targetFolderId: this.node.folder.id };
+  }
+
+  onDropped(event: CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>): void {
     this.droppedNotebook.emit(event);
-  }
-
-  allowDrop(event: DragEvent): void {
-    event.preventDefault();
-    if (event.dataTransfer) {
-      event.dataTransfer.dropEffect = 'move';
-    }
-  }
-
-  onNativeDrop(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Try our custom type first, then fallback to application/json
-    let data = event.dataTransfer?.getData('application/x-nle-note');
-    if (!data) {
-      data = event.dataTransfer?.getData('application/json');
-    }
-    if (!data) return;
-
-    try {
-      const nb = JSON.parse(data) as NotebookItem;
-      // Emit droppedNotebook with duck-typed event
-      const mockEvent = {
-        item: { data: nb },
-        container: { data: { targetFolderId: this.node.folder.id } }
-      } as unknown as CdkDragDrop<any>;
-      this.droppedNotebook.emit(mockEvent);
-    } catch (e) {
-      console.error('Failed to parse native drop', e);
-    }
   }
 }

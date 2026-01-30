@@ -9,6 +9,7 @@
 
     messageTypeNotebooksSync: 'NLE_NOTEBOOKS_SYNC',
     messageTypeOpenNotebook: 'NLE_OPEN_NOTEBOOK',
+    messageTypeOpenNotebookMenu: 'NLE_OPEN_NOTE_MENU',
     messageTypeNativeDrop: 'NLE_NATIVE_DROP',
 
     selectors: {
@@ -18,6 +19,7 @@
       artifactTitle: '.artifact-title',
       artifactDetails: '.artifact-details',
       artifactButton: 'button.artifact-button-content',
+      artifactMoreButton: 'button.artifact-more-button',
     },
   };
 })();

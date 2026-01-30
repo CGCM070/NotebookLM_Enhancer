@@ -154,4 +154,28 @@ export class FolderStructureService {
       notebookFolderByTitle: nextTitleMap,
     });
   }
+
+  async setNotebooksFolder(notebooks: Array<{ key: string; title?: string }>, folderId: string | null): Promise<void> {
+    const base = this.state$.value;
+    if (!base) throw new Error('FolderStructureService not initialized');
+    if (notebooks.length === 0) return;
+
+    const nextKeyMap: Record<string, string | null> = { ...base.notebookFolderByKey };
+    const nextTitleMap: Record<string, string | null> = { ...base.notebookFolderByTitle };
+
+    for (const nb of notebooks) {
+      if (!nb.key) continue;
+      nextKeyMap[nb.key] = folderId;
+
+      if (typeof nb.title === 'string' && nb.title.trim()) {
+        nextTitleMap[nb.title] = folderId;
+      }
+    }
+
+    await this.commit({
+      ...base,
+      notebookFolderByKey: nextKeyMap,
+      notebookFolderByTitle: nextTitleMap,
+    });
+  }
 }

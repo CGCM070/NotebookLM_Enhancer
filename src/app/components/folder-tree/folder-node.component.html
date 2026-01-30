@@ -1,7 +1,14 @@
 @let notebooks = notebooksByFolderId[node.folder.id] || [];
-@let dropData = { targetFolderId: node.folder.id };
 
-<div class="group select-none" [style.paddingLeft.px]="8 + depth * 12">
+<div
+  class="group select-none"
+  [style.paddingLeft.px]="8 + depth * 12"
+  [attr.data-nle-drop-folder-id]="node.folder.id"
+  cdkDropList
+  [cdkDropListData]="dropData"
+  [cdkDropListSortingDisabled]="true"
+  (cdkDropListDropped)="onDropped($event)"
+>
   <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5">
     <div class="flex min-w-0 items-center gap-2">
       <!-- Chevron or Spacer -->
@@ -61,37 +68,38 @@
     </div>
   </div>
 
-  @if (node.folder.collapsed) {
-  <!-- Collapsed Drop Zone -->
-  <div
-    class="ml-8 mt-1 hidden rounded-lg border border-dashed border-[#5F6368] px-3 py-1.5 text-xs text-[#9AA0A6] transition-all group-hover:block"
-    cdkDropList [cdkDropListData]="dropData" [cdkDropListSortingDisabled]="true"
-    (cdkDropListDropped)="droppedNotebook.emit($event)" (dragover)="allowDrop($event)" (drop)="onNativeDrop($event)">
-    Mover a {{node.folder.name}}
-  </div>
-  } @else {
-  <!-- Expanded Content -->
-  <div class="ml-4 border-l border-[#3C4043] pl-2 transition-all" cdkDropList [cdkDropListData]="dropData"
-    [cdkDropListSortingDisabled]="true" (cdkDropListDropped)="droppedNotebook.emit($event)"
-    (dragover)="allowDrop($event)" (drop)="onNativeDrop($event)">
-    <div class="space-y-0.5 py-1">
-      @for (nb of notebooks; track nb.key) {
-      <app-notebook-item [notebook]="nb" [folders]="folders"
-        [selectedFolderId]="notebookFolderByKey[nb.key] ?? notebookFolderByTitle[nb.title] ?? null"
-        (open)="openNotebook.emit($event)" (setFolder)="setNotebookFolder.emit($event)" />
-      }
-    </div>
+  @if (!node.folder.collapsed) {
+    <!-- Expanded Content -->
+    <div class="ml-4 border-l border-[#3C4043] pl-2 transition-all">
+      <div class="space-y-0.5 py-1">
+        @for (nb of notebooks; track nb.key) {
+          <app-notebook-item
+            [notebook]="nb"
+            (open)="openNotebook.emit($event)"
+            (openMenu)="openNotebookMenu.emit($event)"
+          />
+        }
+      </div>
 
-    <!-- Nested Folders -->
-    <div class="mt-1">
-      @for (child of node.children; track child.folder.id) {
-      <app-folder-node [node]="child" [depth]="depth + 1" [folders]="folders"
-        [notebooksByFolderId]="notebooksByFolderId" [notebookFolderByKey]="notebookFolderByKey"
-        [notebookFolderByTitle]="notebookFolderByTitle" (toggleFolder)="toggleFolder.emit($event)"
-        (createSubfolder)="createSubfolder.emit($event)" (renameFolder)="renameFolder.emit($event)"
-        (deleteFolder)="deleteFolder.emit($event)" (openNotebook)="openNotebook.emit($event)"
-        (setNotebookFolder)="setNotebookFolder.emit($event)" (droppedNotebook)="droppedNotebook.emit($event)" />
-      }
+      <!-- Nested Folders -->
+      <div class="mt-1">
+        @for (child of node.children; track child.folder.id) {
+          <app-folder-node
+            [node]="child"
+            [depth]="depth + 1"
+            [folders]="folders"
+            [notebooksByFolderId]="notebooksByFolderId"
+            [notebookFolderByKey]="notebookFolderByKey"
+            [notebookFolderByTitle]="notebookFolderByTitle"
+            (toggleFolder)="toggleFolder.emit($event)"
+            (createSubfolder)="createSubfolder.emit($event)"
+            (renameFolder)="renameFolder.emit($event)"
+            (deleteFolder)="deleteFolder.emit($event)"
+            (openNotebook)="openNotebook.emit($event)"
+            (openNotebookMenu)="openNotebookMenu.emit($event)"
+            (droppedNotebook)="droppedNotebook.emit($event)"
+          />
+        }
+      </div>
     </div>
-  </div>
   }

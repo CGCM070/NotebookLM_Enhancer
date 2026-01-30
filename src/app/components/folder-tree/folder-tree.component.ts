@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+import type { CdkDragDrop } from '@angular/cdk/drag-drop';
+
+import type { NotebookDropListData } from '../../models/drag-drop.model';
 import type { Folder } from '../../models/folder.model';
 import type { FolderTreeNode } from '../../models/folder-tree-node.model';
 import type { Notebook } from '../../models/notebook.model';
 import { FolderNodeComponent } from './folder-node.component';
-import { DragDropModule, type CdkDragDrop } from '@angular/cdk/drag-drop';
 
 type NotebookItem = Notebook;
 
@@ -27,6 +29,6 @@ export class FolderTreeComponent {
   @Output() deleteFolder = new EventEmitter<Folder>();
 
   @Output() openNotebook = new EventEmitter<NotebookItem>();
-  @Output() setNotebookFolder = new EventEmitter<{ notebook: NotebookItem; folderId: string | null }>();
-  @Output() droppedNotebook = new EventEmitter<CdkDragDrop<any>>();
+  @Output() openNotebookMenu = new EventEmitter<NotebookItem>();
+  @Output() droppedNotebook = new EventEmitter<CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>>();
 }

@@ -4,10 +4,12 @@ import { Component, NgZone, OnDestroy } from '@angular/core';
 import type { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 
+import type { NotebookDropListData } from './models/drag-drop.model';
 import type { Folder } from './models/folder.model';
 import type { FolderTreeNode } from './models/folder-tree-node.model';
 import type { Notebook } from './models/notebook.model';
 import { FolderTreeComponent } from './components/folder-tree/folder-tree.component';
+import { NotebookItemComponent } from './components/notebook-item/notebook-item.component';
 
 import { FolderStructureService } from './services/folder-structure.service';
 
@@ -15,7 +17,7 @@ type NotebookItem = Notebook;
 
 @Component({
   selector: 'app-root',
-  imports: [AsyncPipe, DragDropModule, FolderTreeComponent],
+  imports: [AsyncPipe, DragDropModule, FolderTreeComponent, NotebookItemComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -30,7 +32,7 @@ export class AppComponent implements OnDestroy {
   unsortedNotebooks: NotebookItem[] = [];
   notebooksByFolderId: Record<string, NotebookItem[]> = {};
   isCollapsed = false;
-  dropDataUnsorted = { targetFolderId: null };
+  readonly dropDataUnsorted: NotebookDropListData = { targetFolderId: null };
 
   folderTree: FolderTreeNode[] = [];
 
@@ -56,27 +58,44 @@ export class AppComponent implements OnDestroy {
       if (!event.data || typeof event.data !== 'object') return;
 
       const data = event.data as { type?: unknown; payload?: unknown };
-      if (data.type !== 'NLE_NOTEBOOKS_SYNC') return;
 
-      const payload = data.payload as { notebooks?: unknown };
-      const notebooks = payload.notebooks;
-      if (!Array.isArray(notebooks)) return;
+      if (data.type === 'NLE_NOTEBOOKS_SYNC') {
+        const payload = data.payload as { notebooks?: unknown };
+        const notebooks = payload.notebooks;
+        if (!Array.isArray(notebooks)) return;
 
-      this.ngZone.run(() => {
-        this.notebooks = notebooks
-          .map((n) => {
-            if (!n || typeof n !== 'object') return null;
-            const nn = n as { index?: unknown; key?: unknown; title?: unknown; details?: unknown };
-            if (typeof nn.index !== 'number' || !Number.isInteger(nn.index) || nn.index < 0) return null;
-            if (typeof nn.title !== 'string') return null;
-            const key = typeof nn.key === 'string' && nn.key ? nn.key : `${nn.index}:${nn.title}`;
-            const details = typeof nn.details === 'string' ? nn.details : null;
-            return { index: nn.index, key, title: nn.title, details } satisfies NotebookItem;
-          })
-          .filter((n): n is NotebookItem => n !== null);
+        this.ngZone.run(() => {
+          this.notebooks = notebooks
+            .map((n) => {
+              if (!n || typeof n !== 'object') return null;
+              const nn = n as { index?: unknown; key?: unknown; title?: unknown; details?: unknown };
+              if (typeof nn.index !== 'number' || !Number.isInteger(nn.index) || nn.index < 0) return null;
+              if (typeof nn.title !== 'string') return null;
+              const key = typeof nn.key === 'string' && nn.key ? nn.key : `${nn.index}:${nn.title}`;
+              const details = typeof nn.details === 'string' ? nn.details : null;
+              return { index: nn.index, key, title: nn.title, details } satisfies NotebookItem;
+            })
+            .filter((n): n is NotebookItem => n !== null);
 
-        this.recomputeNotebookSections();
-      });
+          this.recomputeNotebookSections();
+        });
+        return;
+      }
+
+      if (data.type === 'NLE_NATIVE_DROP') {
+        const payload = data.payload as { notebook?: unknown; x?: unknown; y?: unknown };
+        const nbRaw = payload.notebook;
+        if (!nbRaw || typeof nbRaw !== 'object') return;
+        const nb = nbRaw as { key?: unknown; title?: unknown };
+        const key = typeof nb.key === 'string' ? nb.key : null;
+        const title = typeof nb.title === 'string' ? nb.title : null;
+        if (!key || !title) return;
+        if (typeof payload.x !== 'number' || typeof payload.y !== 'number') return;
+
+        this.ngZone.run(() => {
+          void this.handleNativeDrop({ key, title }, payload.x as number, payload.y as number);
+        });
+      }
     };
 
     window.addEventListener('message', this.onMessage);
@@ -123,33 +142,16 @@ export class AppComponent implements OnDestroy {
     const out: Record<string, NotebookItem[]> = {};
     for (const [id, arr] of byId.entries()) out[id] = arr;
 
-    this.unsortedNotebooks = []; // User requested inbox hidden
+    this.unsortedNotebooks = unsorted;
     this.notebooksByFolderId = out;
-
-    // Manage Native List Visibility
-    this.updateNativeVisibility();
   }
 
-  private updateNativeVisibility(): void {
-    // Build a map of title -> folderId for notes that are in folders
-    const allTitleMap = this.folders.notebookFolderByTitle$.value;
-    const allKeyMap = this.folders.notebookFolderByKey$.value;
-
-    // Create a map of all titles that should be hidden (have a folder assigned)
-    const folderByTitle: Record<string, string> = {};
-
-    for (const nb of this.notebooks) {
-      const folderId = allKeyMap[nb.key] ?? allTitleMap[nb.title] ?? null;
-      if (folderId) {
-        folderByTitle[nb.title.trim()] = folderId;
-      }
-    }
-
-    // Send message to parent (content script) to hide/show native notes
-    window.parent.postMessage({
-      type: 'NLE_UPDATE_VISIBILITY',
-      payload: { folderByTitle }
-    }, '*');
+  private async handleNativeDrop(nb: { key: string; title: string }, x: number, y: number): Promise<void> {
+    const el = document.elementFromPoint(x, y);
+    const target = el?.closest?.('[data-nle-drop-folder-id]') as HTMLElement | null;
+    const raw = target?.getAttribute('data-nle-drop-folder-id');
+    const folderId = raw && raw.trim() ? raw.trim() : null;
+    await this.folders.setNotebookFolder(nb.key, folderId, nb.title);
   }
 
 
@@ -208,6 +210,32 @@ export class AppComponent implements OnDestroy {
     );
   }
 
+  openNotebookMenu(nb: NotebookItem): void {
+    window.parent.postMessage(
+      {
+        type: 'NLE_OPEN_NOTE_MENU',
+        payload: {
+          index: nb.index,
+          title: nb.title,
+        },
+      },
+      '*'
+    );
+  }
+
+  async moveInboxToFolder(folderId: string): Promise<void> {
+    const nextFolderId = folderId && folderId.trim() ? folderId.trim() : null;
+    if (!nextFolderId) return;
+
+    const folders = this.folders.folders$.value;
+    if (!folders.some((f) => f.id === nextFolderId)) return;
+
+    const items = this.unsortedNotebooks.map((nb) => ({ key: nb.key, title: nb.title }));
+    if (items.length === 0) return;
+
+    await this.folders.setNotebooksFolder(items, nextFolderId);
+  }
+
   async createFolder(): Promise<void> {
     const name = window.prompt('Folder name');
     if (!name) return;
@@ -242,7 +270,9 @@ export class AppComponent implements OnDestroy {
     await this.folders.setNotebookFolder(nb.key, folderId, nb.title);
   }
 
-  async onNotebookDropped(event: CdkDragDrop<any>): Promise<void> {
+  async onNotebookDropped(
+    event: CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>
+  ): Promise<void> {
     const targetFolderId = event.container.data?.targetFolderId ?? null;
     const nb = event.item.data as Partial<NotebookItem> | null;
     if (!nb || typeof nb.key !== 'string' || typeof nb.title !== 'string') return;

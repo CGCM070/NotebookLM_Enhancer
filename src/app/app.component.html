@@ -42,14 +42,69 @@
     <div class="mx-4 border-t border-[#3C4043]"></div>
 
     <!-- Main Content Area -->
-    <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
+      <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
+        <!-- Inbox (Unassigned) -->
+        <div class="px-1 pt-2">
+        <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-white/5">
+          <div class="flex items-center gap-2 text-sm text-[#E3E3E3]">
+            <div class="text-[#8AB4F8]">
+              <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+                <path
+                  d="M19 3H4.99C3.89 3 3 3.9 3 5v14c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 4l-7 5-7-5V5l7 5 7-5v2z" />
+              </svg>
+            </div>
+            <div class="font-normal">Inbox</div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="text-xs text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
+
+            <select
+              #bulkInbox
+              class="appearance-none cursor-pointer rounded border border-[#5F6368] bg-transparent py-0.5 pl-1.5 pr-5 text-[10px] text-[#9AA0A6] hover:border-[#E3E3E3] hover:text-[#E3E3E3] focus:border-[#8AB4F8] focus:outline-none"
+              aria-label="Mover todo"
+              title="Mover todo"
+              (change)="moveInboxToFolder(bulkInbox.value); bulkInbox.value = ''"
+            >
+              <option value="" class="bg-[#202124]">Mover todo…</option>
+              @for (f of folderList; track f.id) {
+                <option [value]="f.id" class="bg-[#202124]">{{ f.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div
+          class="ml-2 rounded-lg border border-[#3C4043] bg-[#202124]/40"
+          cdkDropList
+          [cdkDropListData]="dropDataUnsorted"
+          [cdkDropListSortingDisabled]="true"
+          (cdkDropListDropped)="onNotebookDropped($event)"
+          data-nle-drop-folder-id=""
+        >
+          @if (unsortedNotebooks.length === 0) {
+            <div class="px-3 py-2 text-xs text-[#5F6368]">Nada en Inbox</div>
+          } @else {
+            <div class="py-1">
+              @for (nb of unsortedNotebooks; track nb.key) {
+                <app-notebook-item
+                  [notebook]="nb"
+                  (open)="openNotebook($event)"
+                  (openMenu)="openNotebookMenu($event)"
+                />
+              }
+            </div>
+          }
+        </div>
+      </div>
+
       <!-- Folder Tree -->
       <div class="px-1 py-2">
         <app-folder-tree [tree]="folderTree" [folders]="folderList" [notebooksByFolderId]="notebooksByFolderId"
           [notebookFolderByKey]="keyMap" [notebookFolderByTitle]="titleMap" (toggleFolder)="toggleFolder($event)"
           (createSubfolder)="createSubfolder($event)" (renameFolder)="renameFolder($event)"
           (deleteFolder)="deleteFolder($event)" (openNotebook)="openNotebook($event)"
-          (setNotebookFolder)="setNotebookFolder($event.notebook, $event.folderId)"
+          (openNotebookMenu)="openNotebookMenu($event)"
           (droppedNotebook)="onNotebookDropped($event)" />
       </div>
     </div>
