@@ -1,14 +1,14 @@
 @if (tree.length === 0) {
-  <div class="p-2 text-xs text-slate-500">No folders yet.</div>
+<div class="py-4 text-center text-xs text-[#5F6368] italic opacity-70">
+  No folders.
+</div>
 } @else {
-  @for (node of tree; track node.folder.id) {
-    <app-folder-node
-      [node]="node"
-      [depth]="0"
-      (toggleFolder)="toggleFolder.emit($event)"
-      (createSubfolder)="createSubfolder.emit($event)"
-      (renameFolder)="renameFolder.emit($event)"
-      (deleteFolder)="deleteFolder.emit($event)"
-    />
-  }
+@for (node of tree; track node.folder.id) {
+<app-folder-node [node]="node" [depth]="0" [folders]="folders" [notebooksByFolderId]="notebooksByFolderId"
+  [notebookFolderByKey]="notebookFolderByKey" [notebookFolderByTitle]="notebookFolderByTitle"
+  (toggleFolder)="toggleFolder.emit($event)" (createSubfolder)="createSubfolder.emit($event)"
+  (renameFolder)="renameFolder.emit($event)" (deleteFolder)="deleteFolder.emit($event)"
+  (openNotebook)="openNotebook.emit($event)" (setNotebookFolder)="setNotebookFolder.emit($event)"
+  (droppedNotebook)="droppedNotebook.emit($event)" />
+}
 }

@@ -1,72 +1,58 @@
-<div class="h-full w-full bg-white p-3 text-slate-900" cdkDropListGroup>
-  <div class="flex items-center justify-between">
-    <div class="text-sm font-semibold">NotebookLM Enhancer</div>
-    <div class="flex items-center gap-2">
-      <div class="text-xs text-slate-500">{{ notebooks.length }} notebooks</div>
-      <button
-        type="button"
-        class="rounded border border-slate-200 bg-white px-2 py-1 text-xs hover:bg-slate-50"
-        (click)="createFolder()"
-      >
-        + Folder
-      </button>
-    </div>
-  </div>
+@let folderList = (folders$ | async) ?? [];
+@let keyMap = (notebookFolderByKey$ | async) ?? {};
+@let titleMap = (notebookFolderByTitle$ | async) ?? {};
 
-  <div class="mt-2 rounded border border-slate-200">
-    <div class="border-b border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">Folders</div>
-    <div class="max-h-[92px] overflow-auto">
-      <app-folder-tree
-        [tree]="folderTree"
-        (toggleFolder)="toggleFolder($event)"
-        (createSubfolder)="createSubfolder($event)"
-        (renameFolder)="renameFolder($event)"
-        (deleteFolder)="deleteFolder($event)"
-      />
-    </div>
-  </div>
+<div class="flex h-full flex-col p-4 text-[#E3E3E3]" cdkDropListGroup>
 
-  <div class="mt-2 rounded border border-slate-200">
-    <div class="border-b border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700">
-      Notebooks
-    </div>
-    @if (notebooks.length === 0) {
-      <div class="p-3 text-xs text-slate-500">Esperando datos de la sidebar…</div>
-    } @else {
-      <div class="max-h-[200px] overflow-auto">
-        @let folders = (folders$ | async) ?? [];
-        @let mapByKey = (notebookFolderByKey$ | async) ?? {};
-        @let mapByTitle = (notebookFolderByTitle$ | async) ?? {};
+  <!-- Minimalist Widget Container -->
+  <div class="flex flex-col rounded-2xl bg-[#1E1F20] shadow-lg border border-[#3C4043] overflow-hidden">
 
-        @for (sec of notebookSections; track sec.id ?? 'unsorted') {
-          <div class="border-b border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700">
-            <span class="whitespace-pre">{{ sec.name }}</span>
-            <span class="ml-1 font-normal text-slate-500">({{ sec.notebooks.length }})</span>
-          </div>
-
-          <div
-            class="divide-y divide-slate-200"
-            cdkDropList
-            [cdkDropListData]="{ targetFolderId: sec.id }"
-            [cdkDropListSortingDisabled]="true"
-            (cdkDropListDropped)="onNotebookDropped($event)"
-          >
-            @if (sec.notebooks.length === 0) {
-              <div class="px-2 py-2 text-xs text-slate-400">Drop here</div>
-            } @else {
-              @for (nb of sec.notebooks; track nb.key) {
-                <app-notebook-item
-                  [notebook]="nb"
-                  [folders]="folders"
-                  [selectedFolderId]="mapByKey[nb.key] ?? mapByTitle[nb.title] ?? null"
-                  (open)="openNotebook($event)"
-                  (setFolder)="setNotebookFolder($event.notebook, $event.folderId)"
-                />
-              }
-            }
-          </div>
-        }
+    <!-- Header (Image 2 Style) -->
+    <div class="flex items-center justify-between px-4 py-3">
+      <div class="flex items-baseline gap-3">
+        <h1 class="text-base font-normal text-[#E8EAED]">Folders</h1>
       </div>
+
+      <div class="flex items-center gap-1">
+        <!-- New Folder -->
+        <button
+          class="flex h-8 w-8 items-center justify-center rounded-full text-[#9AA0A6] hover:bg-[#3C4043] hover:text-[#E3E3E3] transition-colors"
+          (click)="createFolder()" title="Nueva carpeta">
+          <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+            <path
+              d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2zM4 18V6h4.17l2 2H20v10H4z" />
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 10h2v4h4v2h-4v4h-2v-4h-4v-2h4z" transform="scale(0.75) translate(4,4)" />
+          </svg>
+        </button>
+
+        <!-- Collapse -->
+        <button
+          class="flex h-8 w-8 items-center justify-center rounded-full text-[#9AA0A6] hover:bg-[#3C4043] hover:text-[#E3E3E3] transition-colors transition-transform duration-200"
+          [class.rotate-180]="isCollapsed" (click)="isCollapsed = !isCollapsed">
+          <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" transform="rotate(90, 12, 12)" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    @if (!isCollapsed) {
+    <!-- Divider -->
+    <div class="mx-4 border-t border-[#3C4043]"></div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
+      <!-- Folder Tree -->
+      <div class="px-1 py-2">
+        <app-folder-tree [tree]="folderTree" [folders]="folderList" [notebooksByFolderId]="notebooksByFolderId"
+          [notebookFolderByKey]="keyMap" [notebookFolderByTitle]="titleMap" (toggleFolder)="toggleFolder($event)"
+          (createSubfolder)="createSubfolder($event)" (renameFolder)="renameFolder($event)"
+          (deleteFolder)="deleteFolder($event)" (openNotebook)="openNotebook($event)"
+          (setNotebookFolder)="setNotebookFolder($event.notebook, $event.folderId)"
+          (droppedNotebook)="onNotebookDropped($event)" />
+      </div>
+    </div>
     }
   </div>
 </div>
