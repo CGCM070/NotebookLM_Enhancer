@@ -263,13 +263,74 @@ export class AppComponent implements OnDestroy {
   async createFolder(): Promise<void> {
     const name = await this.modalService.prompt('Nueva carpeta');
     if (!name) return;
-    await this.folders.createFolder(name);
+    const folder = await this.folders.createFolder(name);
+    void this.scrollAndHighlightFolder(folder.id);
   }
 
   async createSubfolder(parent: Folder): Promise<void> {
     const name = await this.modalService.prompt('Nueva subcarpeta');
     if (!name) return;
-    await this.folders.createFolder(name, parent.id);
+    const folder = await this.folders.createFolder(name, parent.id);
+    void this.scrollAndHighlightFolder(folder.id);
+  }
+
+  /**
+   * Scroll smoothly to a folder and highlight it briefly
+   * Only scrolls for root folders (no parentId). Subfolders don't scroll.
+   */
+  private async scrollAndHighlightFolder(folderId: string): Promise<void> {
+    // Wait for DOM to update
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Find the folder element
+    const element = document.querySelector(`div[data-nle-folder-id="${folderId}"]`) as HTMLElement | null;
+    if (!element) return;
+
+    // Check if this is a root folder or subfolder
+    const folder = this.folders.folders$.value.find((f) => f.id === folderId);
+    const isRootFolder = !folder?.parentId;
+
+    // For subfolders, just highlight (no scroll needed)
+    if (!isRootFolder) {
+      element.classList.add('nle-folder-highlight');
+      setTimeout(() => element.classList.remove('nle-folder-highlight'), 520);
+      return;
+    }
+
+    // For root folders, expand parent if needed (though root folders don't have parents)
+    // Then scroll if needed
+
+    // Get the scroll container
+    const scrollContainer = document.querySelector('.overflow-y-auto') as HTMLElement | null;
+    if (!scrollContainer) {
+      element.classList.add('nle-folder-highlight');
+      setTimeout(() => element.classList.remove('nle-folder-highlight'), 520);
+      return;
+    }
+
+    // Use getBoundingClientRect() for accurate positioning
+    const elementRect = element.getBoundingClientRect();
+    const containerRect = scrollContainer.getBoundingClientRect();
+
+    // Calculate element position relative to scroll container
+    const elementTopFromContainer = elementRect.top - containerRect.top + scrollContainer.scrollTop;
+
+    // Scroll to center the element in the container
+    const targetScrollTop = elementTopFromContainer - (scrollContainer.clientHeight / 2) + (elementRect.height / 2);
+
+    // Scroll to element
+    scrollContainer.scrollTo({
+      top: targetScrollTop,
+      behavior: 'smooth',
+    });
+
+    // Add highlight effect
+    element.classList.add('nle-folder-highlight');
+
+    // Remove highlight after 520ms
+    setTimeout(() => {
+      element.classList.remove('nle-folder-highlight');
+    }, 520);
   }
 
   async toggleFolder(folder: Folder): Promise<void> {

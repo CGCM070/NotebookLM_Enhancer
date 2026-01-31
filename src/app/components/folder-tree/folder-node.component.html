@@ -3,6 +3,7 @@
 <div
   class="group select-none"
   [style.paddingLeft.px]="8 + (depth > 6 ? 6 : depth) * 12"
+  [attr.data-nle-folder-id]="node.folder.id"
 >
   <div
     class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
