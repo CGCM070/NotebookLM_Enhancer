@@ -1,14 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
+/* Custom dark variant using class instead of media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
 html,
 body {
   height: 100%;
   margin: 0;
   background: transparent;
 
-  /* Minimal dark scrollbar (Chromium + Firefox). */
+  /* Minimal scrollbar (Chromium + Firefox) - default light */
   scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+}
+
+/* Dark mode scrollbar when .dark class is present */
+html.dark,
+html.dark body {
   scrollbar-color: rgba(154, 160, 166, 0.45) transparent;
 }
 
@@ -27,13 +36,23 @@ app-root {
   background: transparent;
 }
 
+/* Light mode default */
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(154, 160, 166, 0.35);
+  background-color: rgba(100, 100, 100, 0.3);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 100, 100, 0.5);
+}
+
+/* Dark mode when .dark class is present */
+html.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(154, 160, 166, 0.35);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(232, 234, 237, 0.45);
 }

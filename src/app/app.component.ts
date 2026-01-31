@@ -9,10 +9,12 @@ import type { Folder } from './models/folder.model';
 import type { FolderTreeNode } from './models/folder-tree-node.model';
 import type { NotebookMenuRequest } from './models/notebook-menu.model';
 import type { Notebook } from './models/notebook.model';
+import type { ThemeType } from './models/theme.model';
 import { FolderTreeComponent } from './components/folder-tree/folder-tree.component';
 import { NotebookItemComponent } from './components/notebook-item/notebook-item.component';
 
 import { FolderStructureService } from './services/folder-structure.service';
+import { ThemeService } from './services/theme.service';
 
 type NotebookItem = Notebook;
 
@@ -43,15 +45,24 @@ export class AppComponent implements OnDestroy {
   readonly notebookFolderByKey$: Observable<Record<string, string | null>>;
   readonly notebookFolderByTitle$: Observable<Record<string, string | null>>;
 
+  // Theme observables
+  readonly theme$: Observable<ThemeType>;
+  readonly isDark$: Observable<boolean>;
+
   private readonly onMessage: (event: MessageEvent) => void;
 
   constructor(
     private readonly ngZone: NgZone,
-    private readonly folders: FolderStructureService
+    private readonly folders: FolderStructureService,
+    private readonly themeService: ThemeService
   ) {
     this.folders$ = this.folders.folders$;
     this.notebookFolderByKey$ = this.folders.notebookFolderByKey$;
     this.notebookFolderByTitle$ = this.folders.notebookFolderByTitle$;
+
+    // Theme observables
+    this.theme$ = this.themeService.theme$;
+    this.isDark$ = this.themeService.isDark$;
 
     this.onMessage = (event: MessageEvent) => {
       // Messages come from the NotebookLM page context via the content script.
@@ -273,8 +284,36 @@ export class AppComponent implements OnDestroy {
     await this.folders.setNotebookFolder(nb.key, targetFolderId, nb.title);
   }
 
+  /**
+   * Toggle theme between light → dark → system → light
+   */
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
+
+  /**
+   * Get current theme metadata for display
+   */
+  get themeIcon(): string {
+    const theme = this.themeService.currentTheme;
+    switch (theme) {
+      case 'light':
+        return 'sun';
+      case 'dark':
+        return 'moon';
+      case 'system':
+      default:
+        return 'monitor';
+    }
+  }
+
+  get themeTooltip(): string {
+    return this.themeService.getCurrentThemeMetadata().tooltip;
+  }
+
   ngOnDestroy(): void {
     window.removeEventListener('message', this.onMessage);
     this.subs.unsubscribe();
+    this.themeService.destroy();
   }
 }

@@ -1,13 +1,13 @@
 <div class="group relative py-0.5" cdkDrag [cdkDragData]="notebook" (cdkDragEnded)="onDragEnded($event)">
   <!-- Minimal Drag Placeholder -->
-  <div *cdkDragPlaceholder class="my-1 h-8 w-full rounded bg-[#3C4043] border border-[#5F6368] opacity-50"></div>
+  <div *cdkDragPlaceholder class="my-1 h-8 w-full rounded bg-gray-200 dark:bg-[#3C4043] border border-gray-300 dark:border-[#5F6368] opacity-50"></div>
 
-  <div class="flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors hover:bg-white/5">
+  <div class="flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
     <div class="flex min-w-0 flex-1 items-center gap-2">
       <!-- Native actions (open original menu) -->
       <button
         type="button"
-        class="flex h-7 w-7 items-center justify-center rounded text-[#9AA0A6] hover:bg-white/10 hover:text-[#E3E3E3]"
+        class="flex h-7 w-7 items-center justify-center rounded text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-[#E3E3E3]"
         (click)="openMenu.emit({ notebook, x: $event.clientX, y: $event.clientY }); $event.stopPropagation()"
         aria-label="Opciones"
         title="Opciones"
@@ -20,11 +20,11 @@
       <button type="button" class="flex-1 min-w-0 text-left" (click)="open.emit(notebook)">
         <div class="flex items-center gap-2">
           <!-- Simple Doc Icon -->
-          <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0 fill-current text-[#8AB4F8]">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0 fill-current text-blue-600 dark:text-[#8AB4F8]">
             <path
               d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
           </svg>
-          <div class="truncate text-sm font-normal text-[#E3E3E3] group-hover:text-white">
+          <div class="truncate text-sm font-normal text-gray-700 dark:text-[#E3E3E3] group-hover:text-gray-900 dark:group-hover:text-white">
             {{ notebook.title }}
           </div>
         </div>
@@ -33,7 +33,7 @@
 
     <!-- Drag Handle on the right (primary affordance) -->
     <div
-      class="flex cursor-move items-center justify-center text-[#5F6368] opacity-0 transition-opacity group-hover:opacity-100"
+      class="flex cursor-move items-center justify-center text-gray-400 dark:text-[#5F6368] opacity-0 transition-opacity group-hover:opacity-100"
       cdkDragHandle
       aria-label="Arrastrar"
       title="Arrastrar"

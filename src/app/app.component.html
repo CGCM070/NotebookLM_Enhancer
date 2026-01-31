@@ -2,21 +2,44 @@
 @let keyMap = (notebookFolderByKey$ | async) ?? {};
 @let titleMap = (notebookFolderByTitle$ | async) ?? {};
 
-<div class="flex h-full flex-col p-4 text-[#E3E3E3]" cdkDropListGroup>
+<div class="flex h-full flex-col p-4 text-gray-700 dark:text-[#E3E3E3]" cdkDropListGroup>
 
   <!-- Minimalist Widget Container -->
-  <div class="flex flex-col rounded-2xl bg-[#1E1F20] shadow-lg border border-[#3C4043] overflow-hidden">
+  <div class="flex flex-col rounded-2xl bg-white dark:bg-[#1E1F20] shadow-lg border border-gray-200 dark:border-[#3C4043] overflow-hidden">
 
     <!-- Header (Image 2 Style) -->
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-baseline gap-3">
-        <h1 class="text-base font-normal text-[#E8EAED]">Folders</h1>
+        <h1 class="text-base font-normal text-gray-900 dark:text-[#E8EAED]">Folders</h1>
       </div>
 
       <div class="flex items-center gap-1">
+        <!-- Theme Toggle -->
+        <button
+          class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors"
+          (click)="toggleTheme()" [title]="themeTooltip">
+          @if (themeIcon === 'sun') {
+            <!-- Sun icon for light mode -->
+            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+              <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000 1.41.996.996 0 001.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06z"/>
+            </svg>
+          } @else if (themeIcon === 'moon') {
+            <!-- Moon icon for dark mode -->
+            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+              <path d="M9 2c-1.05 0-2.05.16-3 .46 1.69 1.2 2.79 3.18 2.79 5.42 0 3.61-2.93 6.54-6.54 6.54-.67 0-1.31-.1-1.92-.29C1.72 15.2 4.66 18 8.28 18c3.87 0 7-3.13 7-7 0-3.86-3.12-7-7-7z"/>
+            </svg>
+          } @else {
+            <!-- Monitor icon for system mode -->
+            <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+              <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM20 16H4V5h16v11z"/>
+              <path d="M12 18h2v2h-2z"/>
+            </svg>
+          }
+        </button>
+
         <!-- New Folder -->
         <button
-          class="flex h-8 w-8 items-center justify-center rounded-full text-[#9AA0A6] hover:bg-[#3C4043] hover:text-[#E3E3E3] transition-colors"
+          class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors"
           (click)="createFolder()" title="Nueva carpeta">
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
             <path
@@ -28,7 +51,7 @@
 
         <!-- Collapse -->
         <button
-          class="flex h-8 w-8 items-center justify-center rounded-full text-[#9AA0A6] hover:bg-[#3C4043] hover:text-[#E3E3E3] transition-colors transition-transform duration-200"
+          class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors transition-transform duration-200"
           [class.rotate-180]="isCollapsed" (click)="isCollapsed = !isCollapsed">
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" transform="rotate(90, 12, 12)" />
@@ -39,15 +62,15 @@
 
     @if (!isCollapsed) {
     <!-- Divider -->
-    <div class="mx-4 border-t border-[#3C4043]"></div>
+    <div class="mx-4 border-t border-gray-200 dark:border-[#3C4043]"></div>
 
     <!-- Main Content Area -->
       <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
         <!-- Inbox (Unassigned) -->
         <div class="px-1 pt-2">
-        <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-white/5">
-          <div class="flex items-center gap-2 text-sm text-[#E3E3E3]">
-            <div class="text-[#8AB4F8]">
+        <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5">
+          <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-[#E3E3E3]">
+            <div class="text-blue-600 dark:text-[#8AB4F8]">
               <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
                 <path
                   d="M19 3H4.99C3.89 3 3 3.9 3 5v14c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 4l-7 5-7-5V5l7 5 7-5v2z" />
@@ -56,11 +79,11 @@
             <div class="font-normal">Inbox</div>
           </div>
 
-          <div class="text-xs text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
+          <div class="text-xs text-gray-500 dark:text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
         </div>
 
         <div
-          class="ml-2 rounded-lg border border-[#3C4043] bg-[#202124]/40"
+          class="ml-2 rounded-lg border border-gray-200 dark:border-[#3C4043] bg-gray-50/50 dark:bg-[#202124]/40"
           cdkDropList
           [cdkDropListData]="dropDataUnsorted"
           [cdkDropListSortingDisabled]="true"
@@ -68,7 +91,7 @@
           data-nle-drop-folder-id=""
         >
           @if (unsortedNotebooks.length === 0) {
-            <div class="px-3 py-2 text-xs text-[#5F6368]">Nada en Inbox</div>
+            <div class="px-3 py-2 text-xs text-gray-400 dark:text-[#5F6368]">Nada en Inbox</div>
           } @else {
             <div class="py-1">
               @for (nb of unsortedNotebooks; track nb.key) {

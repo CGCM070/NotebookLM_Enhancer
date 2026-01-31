@@ -5,7 +5,7 @@
   [style.paddingLeft.px]="8 + (depth > 6 ? 6 : depth) * 12"
 >
   <div
-    class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/5"
+    class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
     cdkDropList
     [cdkDropListData]="dropData"
     [cdkDropListSortingDisabled]="true"
@@ -18,7 +18,7 @@
       <div class="w-5"></div>
       } @else {
       <button type="button"
-        class="flex h-5 w-5 items-center justify-center rounded hover:bg-white/10 text-[#9AA0A6] transition-colors"
+        class="flex h-5 w-5 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] transition-colors"
         (click)="toggleFolder.emit(node.folder)" [attr.aria-label]="node.folder.collapsed ? 'Expandir' : 'Colapsar'">
         <svg viewBox="0 0 20 20" width="18" height="18" class="fill-current transition-transform duration-200"
           [class.rotate-90]="!node.folder.collapsed">
@@ -28,32 +28,32 @@
       }
 
       <!-- Folder Icon (Outline) -->
-      <div class="flex h-5 w-5 items-center justify-center text-[#E3E3E3]">
+      <div class="flex h-5 w-5 items-center justify-center text-gray-700 dark:text-[#E3E3E3]">
         <svg viewBox="0 0 24 24" width="20" height="20" class="fill-none stroke-current stroke-[1.5]">
           <path
             d="M10 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6H12L10 4Z" />
         </svg>
       </div>
 
-      <div class="min-w-0 truncate text-sm font-normal text-[#E3E3E3]">{{ node.folder.name }}</div>
+      <div class="min-w-0 truncate text-sm font-normal text-gray-700 dark:text-[#E3E3E3]">{{ node.folder.name }}</div>
 
       <!-- Notebook Count (Subtle) -->
       @if (notebooks.length > 0) {
-      <div class="text-xs text-[#9AA0A6]">{{ notebooks.length }}</div>
+      <div class="text-xs text-gray-500 dark:text-[#9AA0A6]">{{ notebooks.length }}</div>
       }
     </div>
 
     <!-- Minimal Hover Actions -->
     <div class="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
       <button type="button"
-        class="flex h-6 w-6 items-center justify-center rounded hover:bg-white/10 text-[#9AA0A6] transition-colors"
+        class="flex h-6 w-6 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] transition-colors"
         (click)="createSubfolder.emit(node.folder)" title="Crear subcarpeta">
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
         </svg>
       </button>
       <button type="button"
-        class="flex h-6 w-6 items-center justify-center rounded hover:bg-white/10 text-[#9AA0A6] transition-colors"
+        class="flex h-6 w-6 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] transition-colors"
         (click)="renameFolder.emit(node.folder)" title="Renombrar">
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path
@@ -61,7 +61,7 @@
         </svg>
       </button>
       <button type="button"
-        class="flex h-6 w-6 items-center justify-center rounded hover:bg-white/10 text-[#9AA0A6] hover:text-[#F28B82] transition-colors"
+        class="flex h-6 w-6 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] hover:text-red-500 dark:hover:text-[#F28B82] transition-colors"
         (click)="deleteFolder.emit(node.folder)" title="Borrar">
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
@@ -72,7 +72,7 @@
 
   @if (!node.folder.collapsed) {
     <!-- Expanded Content -->
-    <div class="ml-4 border-l border-[#3C4043] pl-2 transition-all">
+    <div >
       <div
         class="space-y-0.5 py-1"
         cdkDropList
