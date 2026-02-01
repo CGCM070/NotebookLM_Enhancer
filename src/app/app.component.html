@@ -7,7 +7,7 @@
   <!-- Minimalist Widget Container -->
   <div class="flex flex-col  rounded-2xl bg-white dark:bg-[#1E1F20] shadow-lg border border-gray-200 dark:border-[#3C4043] overflow-hidden">
 
-    <!-- Header (Image 2 Style) -->
+    <!-- Header  -->
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-baseline gap-3">
         <h1 class="text-base font-normal text-gray-900 dark:text-[#E8EAED]">Folders</h1>
@@ -65,18 +65,9 @@
           </svg>
         </button>
 
-        <!-- Collapse -->
-        <button
-          class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors transition-transform duration-200"
-          [class.rotate-180]="isCollapsed" (click)="isCollapsed = !isCollapsed">
-          <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" transform="rotate(90, 12, 12)" />
-          </svg>
-        </button>
       </div>
     </div>
 
-    @if (!isCollapsed) {
     <!-- Divider -->
     <div class="mx-4 border-t border-gray-200 dark:border-[#3C4043]"></div>
 
@@ -86,6 +77,17 @@
         <div class="px-1 pt-2">
         <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5">
           <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-[#E3E3E3]">
+            <button
+              type="button"
+              class="flex h-5 w-5 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] transition-colors"
+              (click)="toggleInbox()"
+              [attr.aria-label]="isInboxCollapsed ? 'Expandir Inbox' : 'Colapsar Inbox'"
+            >
+              <svg viewBox="0 0 20 20" width="18" height="18" class="fill-current transition-transform duration-200"
+                [class.rotate-90]="!isInboxCollapsed">
+                <path d="M7.5 4.5l6 5.5-6 5.5V4.5z" />
+              </svg>
+            </button>
             <div class="text-blue-600 dark:text-[#8AB4F8]">
               <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
                 <path
@@ -99,7 +101,12 @@
         </div>
 
         <div
-          class="ml-2 rounded-lg border border-gray-200 dark:border-[#3C4043] bg-gray-50/50 dark:bg-[#202124]/40"
+          class="ml-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 transition-all dark:border-[#3C4043] dark:bg-[#202124]/40"
+          [class.max-h-0]="isInboxCollapsed"
+          [class.opacity-0]="isInboxCollapsed"
+          [class.pointer-events-none]="isInboxCollapsed"
+          [class.mt-0]="isInboxCollapsed"
+          [class.mt-1]="!isInboxCollapsed"
           cdkDropList
           [cdkDropListData]="dropDataUnsorted"
           [cdkDropListSortingDisabled]="true"
@@ -132,7 +139,6 @@
           (droppedNotebook)="onNotebookDropped($event)" />
       </div>
     </div>
-    }
   </div>
 
   <!-- Modal Component -->

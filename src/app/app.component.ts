@@ -36,7 +36,7 @@ export class AppComponent implements OnDestroy {
   // New properties for the unified view
   unsortedNotebooks: NotebookItem[] = [];
   notebooksByFolderId: Record<string, NotebookItem[]> = {};
-  isCollapsed = false;
+  isInboxCollapsed = false;
   readonly dropDataUnsorted: NotebookDropListData = { targetFolderId: null };
 
   folderTree: FolderTreeNode[] = [];
@@ -274,6 +274,11 @@ export class AppComponent implements OnDestroy {
     void this.scrollAndHighlightFolder(folder.id);
   }
 
+  toggleInbox(): void {
+    this.isInboxCollapsed = !this.isInboxCollapsed;
+  }
+
+
   /**
    * Scroll smoothly to a folder and highlight it briefly
    * Only scrolls for root folders (no parentId). Subfolders don't scroll.
@@ -297,8 +302,6 @@ export class AppComponent implements OnDestroy {
       return;
     }
 
-    // For root folders, expand parent if needed (though root folders don't have parents)
-    // Then scroll if needed
 
     // Get the scroll container
     const scrollContainer = document.querySelector('.overflow-y-auto') as HTMLElement | null;

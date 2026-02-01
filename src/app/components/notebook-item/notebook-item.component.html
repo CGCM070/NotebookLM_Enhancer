@@ -1,4 +1,9 @@
-<div class="group relative py-0.5" cdkDrag [cdkDragData]="notebook" (cdkDragEnded)="onDragEnded($event)">
+<div
+  class="group relative py-0.5"
+  cdkDrag
+  [cdkDragData]="notebook"
+  (cdkDragEnded)="onDragEnded($event)"
+>
   <!-- Minimal Drag Placeholder -->
   <div *cdkDragPlaceholder class="my-1 h-8 w-full rounded bg-gray-200 dark:bg-[#3C4043] border border-gray-300 dark:border-[#5F6368] opacity-50"></div>
 
