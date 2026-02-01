@@ -200,6 +200,9 @@
               console.warn('[NotebookLM Enhancer] Recovery failed:', retryErr);
             }
           }, 500);
+        } else if (err?.message?.includes('getURL') || err?.message?.includes('runtime')) {
+          // Silenciar error temporal de runtime no disponible - se recuperará automáticamente
+          NLE.log('Runtime temporarily unavailable, will retry');
         } else {
           console.warn('[NotebookLM Enhancer] ensureMounted failed', err);
         }

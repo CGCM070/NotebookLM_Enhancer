@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, ViewChild, type SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -75,17 +75,43 @@ import { TranslatePipe } from '../../i18n';
     }
   `,
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input({ required: true }) config!: ModalConfig;
   @Input() isOpen = false;
 
   @Output() closed = new EventEmitter<PromptModalResult | ConfirmModalResult>();
+
+  @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   inputValue = '';
 
   ngOnInit(): void {
     if (this.config.type === 'prompt') {
       this.inputValue = this.config.defaultValue || '';
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.focusInput();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Focus input when modal opens (isOpen changes from false to true)
+    if (changes['isOpen']?.currentValue === true && this.config.type === 'prompt') {
+      setTimeout(() => {
+        this.focusInput();
+      }, 0);
+    }
+  }
+
+  /**
+   * Focus input and select all text
+   */
+  private focusInput(): void {
+    if (this.isOpen && this.config.type === 'prompt' && this.inputRef) {
+      const input = this.inputRef.nativeElement;
+      input.focus();
+      input.select();
     }
   }
 
@@ -97,13 +123,6 @@ export class ModalComponent implements OnInit {
     if (this.isOpen) {
       this.cancel();
     }
-  }
-
-  /**
-   * Focus input when modal opens
-   */
-  onInputFocus(): void {
-    // Focus logic handled by template reference
   }
 
   /**
