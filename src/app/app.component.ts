@@ -31,9 +31,7 @@ export class AppComponent implements OnDestroy {
 
   notebooks: NotebookItem[] = [];
 
-  notebookSections: Array<{ id: string | null; name: string; notebooks: NotebookItem[] }> = [];
-
-  // New properties for the unified view
+  // Unified view properties
   unsortedNotebooks: NotebookItem[] = [];
   notebooksByFolderId: Record<string, NotebookItem[]> = {};
   isInboxCollapsed = false;
@@ -55,7 +53,6 @@ export class AppComponent implements OnDestroy {
 
   // Modal state
   isModalOpen = false;
-  private modalState: import('./models/modal.model').ModalState | null = null;
 
   // Modal configuration getter for template
   get modalConfig() {
@@ -227,20 +224,6 @@ export class AppComponent implements OnDestroy {
     };
 
     return build(null);
-  }
-
-  private flattenFolderTree(tree: FolderTreeNode[]): Array<{ folder: Folder; depth: number }> {
-    const out: Array<{ folder: Folder; depth: number }> = [];
-
-    const walk = (nodes: FolderTreeNode[], depth: number) => {
-      for (const node of nodes) {
-        out.push({ folder: node.folder, depth });
-        walk(node.children, depth + 1);
-      }
-    };
-
-    walk(tree, 0);
-    return out;
   }
 
   openNotebook(nb: NotebookItem): void {
