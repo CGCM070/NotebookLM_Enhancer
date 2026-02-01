@@ -4,18 +4,18 @@
   "version": "0.0.1",
   "description": "Adds folders and enhancements to NotebookLM sidebar.",
   "icons": {
-    "16": "favicon.ico",
-    "32": "favicon.ico",
-    "48": "favicon.ico",
-    "128": "favicon.ico"
+    "16": "folder.png",
+    "32": "folder.png",
+    "48": "folder.png",
+    "128": "folder.png"
   },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "favicon.ico",
-      "32": "favicon.ico",
-      "48": "favicon.ico",
-      "128": "favicon.ico"
+      "16": "folder.png",
+      "32": "folder.png",
+      "48": "folder.png",
+      "128": "folder.png"
     },
     "default_title": "NotebookLM Enhancer"
   },
@@ -51,7 +51,7 @@
         "*.js",
         "*.css",
         "assets/**",
-        "favicon.ico"
+        "folder.png"
       ],
       "matches": [
         "https://notebooklm.google.com/*"
