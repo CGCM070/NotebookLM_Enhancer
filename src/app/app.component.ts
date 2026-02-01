@@ -97,12 +97,14 @@ export class AppComponent implements OnDestroy {
           this.notebooks = notebooks
             .map((n) => {
               if (!n || typeof n !== 'object') return null;
-              const nn = n as { index?: unknown; key?: unknown; title?: unknown; details?: unknown };
+              const nn = n as { index?: unknown; key?: unknown; title?: unknown; details?: unknown; icon?: unknown; color?: unknown };
               if (typeof nn.index !== 'number' || !Number.isInteger(nn.index) || nn.index < 0) return null;
               if (typeof nn.title !== 'string') return null;
               const key = typeof nn.key === 'string' && nn.key ? nn.key : `${nn.index}:${nn.title}`;
               const details = typeof nn.details === 'string' ? nn.details : null;
-              return { index: nn.index, key, title: nn.title, details } satisfies NotebookItem;
+              const icon = typeof nn.icon === 'string' ? nn.icon : 'sticky_note_2';
+              const color = typeof nn.color === 'string' ? nn.color : 'grey';
+              return { index: nn.index, key, title: nn.title, details, icon, color } satisfies NotebookItem;
             })
             .filter((n): n is NotebookItem => n !== null);
 

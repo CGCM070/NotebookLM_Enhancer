@@ -59,3 +59,70 @@ html.dark .nle-folder-highlight {
   background-color: rgba(255, 255, 255, 0.05) !important;
   transition: background-color 520ms ease-out !important;
 }
+
+/* Material Symbols - Fill and weight settings */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20;
+}
+
+/* Icon Colors - Matching NotebookLM native colors */
+.icon-blue {
+  color: #4285f4;
+}
+
+.icon-green {
+  color: #34a853;
+}
+
+.icon-pink {
+  color: #ea4335;
+}
+
+.icon-yellow {
+  color: #fbbc05;
+}
+
+.icon-orange {
+  color: #ff6d01;
+}
+
+.icon-cyan {
+  color: #24c1e0;
+}
+
+.icon-grey {
+  color: #5f6368;
+}
+
+/* Dark mode icon colors - slightly adjusted for dark backgrounds */
+.icon-blue-dark {
+  color: #8ab4f8;
+}
+
+.icon-green-dark {
+  color: #81c995;
+}
+
+.icon-pink-dark {
+  color: #f28b82;
+}
+
+.icon-yellow-dark {
+  color: #fdd663;
+}
+
+.icon-orange-dark {
+  color: #f9ab00;
+}
+
+.icon-cyan-dark {
+  color: #78d9ec;
+}
+
+.icon-grey-dark {
+  color: #9aa0a6;
+}
