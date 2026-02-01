@@ -12,6 +12,7 @@
     messageTypeOpenNotebookMenu: 'NLE_OPEN_NOTE_MENU',
     messageTypeDeleteNotebook: 'NLE_DELETE_NOTEBOOK',
     messageTypeNativeDrop: 'NLE_NATIVE_DROP',
+    messageTypeUiHeight: 'NLE_UI_HEIGHT',
 
     selectors: {
       studioPanel: 'section.studio-panel',

@@ -48,11 +48,11 @@
 
     const style = document.createElement('style');
     style.textContent = `
-      :host { all: initial; display: block; width: 100%; }
-      .nle-wrap { display: block; width: 100%; }
+      :host { all: initial; display: block; width: 100%; height: 100%; }
+      .nle-wrap { display: block; width: 100%; height: 100%; overflow: hidden; }
       .nle-frame {
         width: 100%;
-        height: 340px;
+        height: 100%;
         border: 0;
         display: block;
       }
@@ -71,6 +71,29 @@
     shadow.appendChild(style);
     shadow.appendChild(wrap);
 
+    setupDynamicHeight(hostEl, frame);
+
     return frame;
   };
+
+  function setupDynamicHeight(hostEl, frameEl) {
+    const studioPanel = findStudioPanel();
+    if (!studioPanel) return;
+
+    function updateHeight() {
+      const rect = studioPanel.getBoundingClientRect();
+      const height = Math.floor(rect.height);
+      hostEl.style.height = height + 'px';
+    }
+
+    updateHeight();
+
+    const observer = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    observer.observe(studioPanel);
+    NLE.observers = NLE.observers || [];
+    NLE.observers.push(observer);
+  }
 })();
