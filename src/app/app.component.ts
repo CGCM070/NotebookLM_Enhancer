@@ -13,6 +13,7 @@ import type { ThemeType } from './models/theme.model';
 import { FolderTreeComponent } from './components/folder-tree/folder-tree.component';
 import { NotebookItemComponent } from './components/notebook-item/notebook-item.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { TranslatePipe, TranslationService, type Language } from './i18n';
 
 import { FolderStructureService } from './services/folder-structure.service';
 import { ThemeService } from './services/theme.service';
@@ -22,7 +23,7 @@ type NotebookItem = Notebook;
 
 @Component({
   selector: 'app-root',
-  imports: [AsyncPipe, DragDropModule, FolderTreeComponent, NotebookItemComponent, ModalComponent],
+  imports: [AsyncPipe, DragDropModule, FolderTreeComponent, NotebookItemComponent, ModalComponent, TranslatePipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -49,6 +50,9 @@ export class AppComponent implements OnDestroy {
   readonly theme$: Observable<ThemeType>;
   readonly isDark$: Observable<boolean>;
 
+  // Language observable
+  readonly currentLang$: Observable<Language>;
+
   private readonly onMessage: (event: MessageEvent) => void;
 
   // Modal state
@@ -63,7 +67,8 @@ export class AppComponent implements OnDestroy {
     private readonly ngZone: NgZone,
     private readonly folders: FolderStructureService,
     private readonly themeService: ThemeService,
-    readonly modalService: ModalService
+    readonly modalService: ModalService,
+    readonly translationService: TranslationService
   ) {
     this.folders$ = this.folders.folders$;
     this.notebookFolderByKey$ = this.folders.notebookFolderByKey$;
@@ -72,6 +77,9 @@ export class AppComponent implements OnDestroy {
     // Theme observables
     this.theme$ = this.themeService.theme$;
     this.isDark$ = this.themeService.isDark$;
+
+    // Language observable
+    this.currentLang$ = this.translationService.currentLang$;
 
     this.onMessage = (event: MessageEvent) => {
       // Messages come from the NotebookLM page context via the content script.
@@ -256,14 +264,14 @@ export class AppComponent implements OnDestroy {
   }
 
   async createFolder(): Promise<void> {
-    const name = await this.modalService.prompt('Nueva carpeta');
+    const name = await this.modalService.prompt(this.translationService.translate('modals.newFolder.title'));
     if (!name) return;
     const folder = await this.folders.createFolder(name);
     void this.scrollAndHighlightFolder(folder.id);
   }
 
   async createSubfolder(parent: Folder): Promise<void> {
-    const name = await this.modalService.prompt('Nueva subcarpeta');
+    const name = await this.modalService.prompt(this.translationService.translate('modals.newSubfolder.title'));
     if (!name) return;
     const folder = await this.folders.createFolder(name, parent.id);
     void this.scrollAndHighlightFolder(folder.id);
@@ -336,15 +344,15 @@ export class AppComponent implements OnDestroy {
   }
 
   async renameFolder(folder: Folder): Promise<void> {
-    const name = await this.modalService.prompt('Renombrar carpeta', folder.name);
+    const name = await this.modalService.prompt(this.translationService.translate('modals.renameFolder.title'), folder.name);
     if (!name) return;
     await this.folders.renameFolder(folder.id, name);
   }
 
   async deleteFolder(folder: Folder): Promise<void> {
     const ok = await this.modalService.confirm(
-      'Eliminar carpeta',
-      `¿Seguro que quieres eliminar "${folder.name}" y sus subcarpetas? Las notas se moverán a Inbox.`
+      this.translationService.translate('modals.deleteFolder.title'),
+      this.translationService.translate('modals.deleteFolder.message', { name: folder.name })
     );
     if (!ok) return;
     await this.folders.deleteFolder(folder.id);
@@ -368,6 +376,13 @@ export class AppComponent implements OnDestroy {
    */
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  /**
+   * Toggle language between English and Spanish
+   */
+  toggleLanguage(): void {
+    this.translationService.toggleLanguage();
   }
 
   /**

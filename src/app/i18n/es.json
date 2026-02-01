@@ -1,0 +1,67 @@
+{
+  "app": {
+    "title": "Carpetas",
+    "inbox": "Inbox"
+  },
+  "common": {
+    "close": "Cerrar"
+  },
+  "buttons": {
+    "newFolder": "Nueva carpeta",
+    "createSubfolder": "Crear subcarpeta",
+    "rename": "Renombrar",
+    "delete": "Borrar",
+    "options": "Opciones",
+    "drag": "Arrastrar",
+    "accept": "Aceptar",
+    "cancel": "Cancelar",
+    "yes": "Sí"
+  },
+  "states": {
+    "emptyInbox": "Nada en Inbox",
+    "expand": "Expandir",
+    "collapse": "Colapsar",
+    "expandInbox": "Expandir Inbox",
+    "collapseInbox": "Colapsar Inbox"
+  },
+  "placeholders": {
+    "writeHere": "Escribe aquí..."
+  },
+  "modals": {
+    "newFolder": {
+      "title": "Nueva carpeta"
+    },
+    "newSubfolder": {
+      "title": "Nueva subcarpeta"
+    },
+    "renameFolder": {
+      "title": "Renombrar carpeta"
+    },
+    "deleteFolder": {
+      "title": "Eliminar carpeta",
+      "message": "¿Seguro que quieres eliminar \"{name}\" y sus subcarpetas? Las notas se moverán a Inbox."
+    }
+  },
+  "tooltips": {
+    "newFolder": "Nueva carpeta",
+    "createSubfolder": "Crear subcarpeta",
+    "renameFolder": "Renombrar carpeta",
+    "deleteFolder": "Eliminar carpeta",
+    "options": "Opciones",
+    "drag": "Arrastrar para mover",
+    "expand": "Expandir",
+    "collapse": "Colapsar",
+    "expandInbox": "Expandir Inbox",
+    "collapseInbox": "Colapsar Inbox",
+    "language": "Cambiar Idioma",
+    "theme": "Cambiar Tema"
+  },
+  "aria": {
+    "expandInbox": "Expandir Inbox",
+    "collapseInbox": "Colapsar Inbox",
+    "expandFolder": "Expandir carpeta",
+    "collapseFolder": "Colapsar carpeta",
+    "options": "Opciones",
+    "drag": "Arrastrar"
+  }
+}

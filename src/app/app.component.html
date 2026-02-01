@@ -10,14 +10,21 @@
     <!-- Header  -->
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-baseline gap-3">
-        <h1 class="text-base font-normal text-gray-900 dark:text-[#E8EAED]">Folders</h1>
+        <h1 class="text-base font-normal text-gray-900 dark:text-[#E8EAED]">{{ 'app.title' | translate }}</h1>
       </div>
 
       <div class="flex items-center gap-1">
+        <!-- Language Toggle -->
+        <button
+          class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors"
+          (click)="toggleLanguage()" [title]="'tooltips.language' | translate">
+          {{ (currentLang$ | async) === 'en' ? 'EN' : 'ES' }}
+        </button>
+
         <!-- Theme Toggle -->
         <button
           class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors"
-          (click)="toggleTheme()" [title]="themeTooltip">
+          (click)="toggleTheme()" [title]="'tooltips.theme' | translate">
           @if (themeIcon === 'sun') {
             <!-- Sun icon for light mode -->
             <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current" stroke="currentColor" stroke-width="2" fill="none">
@@ -54,14 +61,12 @@
         <!-- New Folder -->
         <button
           class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] hover:text-gray-700 dark:hover:text-[#E3E3E3] transition-colors"
-          (click)="createFolder()" title="Nueva carpeta">
+          (click)="createFolder()" [title]="'tooltips.newFolder' | translate">
           <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
             <path
               d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2zM4 18V6h4.17l2 2H20v10H4z" />
-            <g>
-              <rect x="8" y="10" width="8" height="8" fill="none"/>
-              <path d="M12 11v4M10 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </g>
+            <circle cx="18" cy="8" r="5" fill="white" class="dark:fill-[#1E1F20]"/>
+            <path d="M18 6v4M16 8h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
           </svg>
         </button>
 
@@ -75,26 +80,27 @@
       <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
         <!-- Inbox (Unassigned) -->
         <div class="px-1 pt-2">
-        <div class="flex items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5">
+        <div
+          class="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 hover:bg-gray-50 dark:hover:bg-white/5"
+          (click)="toggleInbox()"
+        >
           <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-[#E3E3E3]">
-            <button
-              type="button"
-              class="flex h-5 w-5 items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 dark:text-[#9AA0A6] transition-colors"
-              (click)="toggleInbox()"
-              [attr.aria-label]="isInboxCollapsed ? 'Expandir Inbox' : 'Colapsar Inbox'"
+            <div
+              class="flex h-5 w-5 items-center justify-center rounded text-gray-500 dark:text-[#9AA0A6] transition-colors"
+              [attr.aria-label]="isInboxCollapsed ? ('states.expandInbox' | translate) : ('states.collapseInbox' | translate)"
             >
               <svg viewBox="0 0 20 20" width="18" height="18" class="fill-current transition-transform duration-200"
                 [class.rotate-90]="!isInboxCollapsed">
                 <path d="M7.5 4.5l6 5.5-6 5.5V4.5z" />
               </svg>
-            </button>
+            </div>
             <div class="text-blue-600 dark:text-[#8AB4F8]">
               <svg viewBox="0 0 24 24" class="h-5 w-5 fill-current">
                 <path
                   d="M19 3H4.99C3.89 3 3 3.9 3 5v14c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 4l-7 5-7-5V5l7 5 7-5v2z" />
               </svg>
             </div>
-            <div class="font-normal">Inbox</div>
+            <div class="font-normal">{{ 'app.inbox' | translate }}</div>
           </div>
 
           <div class="text-xs text-gray-500 dark:text-[#9AA0A6]">{{ unsortedNotebooks.length }}</div>
@@ -114,7 +120,7 @@
           data-nle-drop-folder-id=""
         >
           @if (unsortedNotebooks.length === 0) {
-            <div class="px-3 py-2 text-xs text-gray-400 dark:text-[#5F6368]">Nada en Inbox</div>
+            <div class="px-3 py-2 text-xs text-gray-400 dark:text-[#5F6368]">{{ 'states.emptyInbox' | translate }}</div>
           } @else {
             <div class="py-1">
               @for (nb of unsortedNotebooks; track nb.key) {

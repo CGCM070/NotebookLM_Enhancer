@@ -1,0 +1,67 @@
+{
+  "app": {
+    "title": "Folders",
+    "inbox": "Inbox"
+  },
+  "common": {
+    "close": "Close"
+  },
+  "buttons": {
+    "newFolder": "New Folder",
+    "createSubfolder": "Create Subfolder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "options": "Options",
+    "drag": "Drag",
+    "accept": "Accept",
+    "cancel": "Cancel",
+    "yes": "Yes"
+  },
+  "states": {
+    "emptyInbox": "Nothing in Inbox",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandInbox": "Expand Inbox",
+    "collapseInbox": "Collapse Inbox"
+  },
+  "placeholders": {
+    "writeHere": "Type here..."
+  },
+  "modals": {
+    "newFolder": {
+      "title": "New Folder"
+    },
+    "newSubfolder": {
+      "title": "New Subfolder"
+    },
+    "renameFolder": {
+      "title": "Rename Folder"
+    },
+    "deleteFolder": {
+      "title": "Delete Folder",
+      "message": "Are you sure you want to delete \"{name}\" and its subfolders? Notes will be moved to Inbox."
+    }
+  },
+  "tooltips": {
+    "newFolder": "New Folder",
+    "createSubfolder": "Create Subfolder",
+    "renameFolder": "Rename Folder",
+    "deleteFolder": "Delete Folder",
+    "options": "Options",
+    "drag": "Drag to move",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandInbox": "Expand Inbox",
+    "collapseInbox": "Collapse Inbox",
+    "language": "Change Language",
+    "theme": "Change Theme"
+  },
+  "aria": {
+    "expandInbox": "Expand Inbox",
+    "collapseInbox": "Collapse Inbox",
+    "expandFolder": "Expand Folder",
+    "collapseFolder": "Collapse Folder",
+    "options": "Options",
+    "drag": "Drag"
+  }
+}

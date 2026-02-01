@@ -7,6 +7,7 @@ import type {
   PromptModalResult, 
   ConfirmModalResult 
 } from '../models/modal.model';
+import { TranslationService } from '../i18n/translation.service';
 
 /**
  * Service for managing modal dialogs.
@@ -16,6 +17,8 @@ import type {
 export class ModalService {
   private readonly modalState$ = new BehaviorSubject<ModalState | null>(null);
   private idCounter = 0;
+
+  constructor(private readonly translationService: TranslationService) {}
 
   /**
    * Observable of the current modal state
@@ -33,8 +36,8 @@ export class ModalService {
         type: 'prompt',
         title,
         defaultValue,
-        confirmText: 'Aceptar',
-        cancelText: 'Cancelar',
+        confirmText: this.translationService.translate('buttons.accept'),
+        cancelText: this.translationService.translate('buttons.cancel'),
       };
 
       const state: ModalState = {
@@ -61,8 +64,8 @@ export class ModalService {
         type: 'confirm',
         title,
         message,
-        confirmText: 'Sí',
-        cancelText: 'Cancelar',
+        confirmText: this.translationService.translate('buttons.yes'),
+        cancelText: this.translationService.translate('buttons.cancel'),
       };
 
       const state: ModalState = {

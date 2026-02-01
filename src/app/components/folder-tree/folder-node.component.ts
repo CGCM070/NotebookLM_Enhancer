@@ -8,13 +8,14 @@ import type { NotebookMenuRequest } from '../../models/notebook-menu.model';
 import type { Notebook } from '../../models/notebook.model';
 import { NotebookItemComponent } from '../notebook-item/notebook-item.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TranslatePipe } from '../../i18n';
 
 type NotebookItem = Notebook;
 
 @Component({
   selector: 'app-folder-node',
   standalone: true,
-  imports: [DragDropModule, NotebookItemComponent],
+  imports: [DragDropModule, NotebookItemComponent, TranslatePipe],
   templateUrl: './folder-node.component.html',
 })
 export class FolderNodeComponent {
@@ -45,5 +46,35 @@ export class FolderNodeComponent {
 
   onDropped(event: CdkDragDrop<NotebookDropListData, NotebookDropListData, NotebookItem>): void {
     this.droppedNotebook.emit(event);
+  }
+
+  onHeaderClick(event: MouseEvent): void {
+    // Check if the click was on an action button or its children
+    const target = event.target as HTMLElement;
+    const isActionButton = target.closest('button') !== null || target.closest('svg') !== null;
+    
+    if (!isActionButton) {
+      // Only toggle if there are children or notebooks to show/hide
+      const notebooks = this.notebooksByFolderId[this.node.folder.id] || [];
+      if (this.node.children.length > 0 || notebooks.length > 0) {
+        this.toggleFolder.emit(this.node.folder);
+      }
+    }
+  }
+
+  onActionClick(event: MouseEvent, action: 'createSubfolder' | 'rename' | 'delete'): void {
+    event.stopPropagation();
+    
+    switch (action) {
+      case 'createSubfolder':
+        this.createSubfolder.emit(this.node.folder);
+        break;
+      case 'rename':
+        this.renameFolder.emit(this.node.folder);
+        break;
+      case 'delete':
+        this.deleteFolder.emit(this.node.folder);
+        break;
+    }
   }
 }

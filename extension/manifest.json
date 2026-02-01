@@ -3,6 +3,22 @@
   "name": "NotebookLM Enhancer",
   "version": "0.0.1",
   "description": "Adds folders and enhancements to NotebookLM sidebar.",
+  "icons": {
+    "16": "favicon.ico",
+    "32": "favicon.ico",
+    "48": "favicon.ico",
+    "128": "favicon.ico"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "favicon.ico",
+      "32": "favicon.ico",
+      "48": "favicon.ico",
+      "128": "favicon.ico"
+    },
+    "default_title": "NotebookLM Enhancer"
+  },
   "permissions": [
     "storage"
   ],

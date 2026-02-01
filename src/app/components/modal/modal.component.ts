@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import type { ModalConfig, PromptModalResult, ConfirmModalResult } from '../../models/modal.model';
+import { TranslatePipe } from '../../i18n';
 
 /**
  * Reusable modal component for prompts and confirmations.
@@ -11,7 +12,7 @@ import type { ModalConfig, PromptModalResult, ConfirmModalResult } from '../../m
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   template: `
     @if (isOpen) {
       <!-- Backdrop -->
@@ -45,7 +46,7 @@ import type { ModalConfig, PromptModalResult, ConfirmModalResult } from '../../m
                 type="text"
                 [(ngModel)]="inputValue"
                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#5F6368] bg-white dark:bg-[#303134] text-gray-900 dark:text-[#E3E3E3] placeholder-gray-400 dark:placeholder-[#80868b] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                [placeholder]="'Escribe aquí...'"
+                [placeholder]="'placeholders.writeHere' | translate"
                 (keyup.enter)="confirm()"
                 (keyup.escape)="cancel()"
               />
@@ -59,14 +60,14 @@ import type { ModalConfig, PromptModalResult, ConfirmModalResult } from '../../m
               class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] transition-colors"
               (click)="cancel()"
             >
-              {{ config.cancelText || 'Cancelar' }}
+              {{ config.cancelText || ('buttons.cancel' | translate) }}
             </button>
             <button
               type="button"
               class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors"
               (click)="confirm()"
             >
-              {{ config.confirmText || (config.type === 'confirm' ? 'Sí' : 'Aceptar') }}
+              {{ config.confirmText || (config.type === 'confirm' ? ('buttons.yes' | translate) : ('buttons.accept' | translate)) }}
             </button>
           </div>
         </div>

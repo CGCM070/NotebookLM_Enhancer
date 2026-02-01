@@ -3,11 +3,12 @@ import { DragDropModule, type CdkDragEnd } from '@angular/cdk/drag-drop';
 
 import type { NotebookMenuRequest } from '../../models/notebook-menu.model';
 import type { Notebook } from '../../models/notebook.model';
+import { TranslatePipe } from '../../i18n';
 
 @Component({
   selector: 'app-notebook-item',
   standalone: true,
-  imports: [DragDropModule],
+  imports: [DragDropModule, TranslatePipe],
   templateUrl: './notebook-item.component.html',
 })
 export class NotebookItemComponent {
