@@ -22,7 +22,7 @@ import { TranslatePipe } from '../../i18n';
       >
         <!-- Modal Card -->
         <div 
-          class="w-full max-w-md rounded-xl bg-white dark:bg-[#1E1F20] shadow-2xl border border-gray-200 dark:border-[#3C4043] overflow-hidden"
+          class="w-full max-w-md rounded-xl bg-white dark:bg-[#22262B] shadow-2xl border border-gray-200 dark:border-[#3C4043] overflow-hidden"
           (click)="$event.stopPropagation()"
         >
           <!-- Header -->
@@ -45,7 +45,7 @@ import { TranslatePipe } from '../../i18n';
                 #inputRef
                 type="text"
                 [(ngModel)]="inputValue"
-                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#5F6368] bg-white dark:bg-[#303134] text-gray-900 dark:text-[#E3E3E3] placeholder-gray-400 dark:placeholder-[#80868b] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#5F6368] bg-white dark:bg-[#2D333B] text-gray-900 dark:text-[#E3E3E3] placeholder-gray-400 dark:placeholder-[#80868b] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 [placeholder]="'placeholders.writeHere' | translate"
                 (keyup.enter)="confirm()"
                 (keyup.escape)="cancel()"
@@ -54,7 +54,7 @@ import { TranslatePipe } from '../../i18n';
           </div>
 
           <!-- Footer -->
-          <div class="px-6 py-4 bg-gray-50 dark:bg-[#202124] flex justify-end gap-3">
+          <div class="px-6 py-4 bg-gray-50 dark:bg-[#22262B] flex justify-end gap-3">
             <button
               type="button"
               class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-[#9AA0A6] hover:bg-gray-100 dark:hover:bg-[#3C4043] transition-colors"
