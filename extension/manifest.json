@@ -39,6 +39,7 @@
         "content/nle-drag.js",
         "content/nle-messaging.js",
         "content/nle-observers.js",
+        "content/nle-export.js",
         "content/main.js"
       ],
       "run_at": "document_idle"
@@ -51,7 +52,10 @@
         "*.js",
         "*.css",
         "assets/**",
-        "folder.png"
+        "folder.png",
+        "lib/pdfmake.min.js",
+        "lib/vfs_fonts.min.js",
+        "lib/html-to-pdfmake.min.js"
       ],
       "matches": [
         "https://notebooklm.google.com/*"

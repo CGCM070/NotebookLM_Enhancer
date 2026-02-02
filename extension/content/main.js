@@ -94,4 +94,9 @@
 
   // Load state first, then mount
   loadEnabledState();
+  
+  // Initialize export functionality
+  if (NLE.initExport) {
+    NLE.initExport();
+  }
 })();
