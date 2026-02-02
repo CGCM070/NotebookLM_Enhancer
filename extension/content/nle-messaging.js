@@ -157,10 +157,11 @@
     const match = Array.from(titleEls).find((el) => (el.textContent ?? '').trim() === title);
     if (!match) return false;
 
-    const noteEl = match.closest('artifact-library-note');
-    if (!noteEl) return false;
+    // Buscar tanto artifact-library-note (notas) como artifact-library-item (otros artefactos)
+    const itemEl = match.closest('artifact-library-note, artifact-library-item');
+    if (!itemEl) return false;
 
-    const btn = noteEl.querySelector(selectors.artifactMoreButton);
+    const btn = itemEl.querySelector(selectors.artifactMoreButton);
     if (!btn) return false;
 
     btn.click();
@@ -175,10 +176,11 @@
     const el = titleEls.item(index);
     if (!el) return false;
 
-    const noteEl = el.closest('artifact-library-note');
-    if (!noteEl) return false;
+    // Buscar tanto artifact-library-note (notas) como artifact-library-item (otros artefactos)
+    const itemEl = el.closest('artifact-library-note, artifact-library-item');
+    if (!itemEl) return false;
 
-    const btn = noteEl.querySelector(selectors.artifactMoreButton);
+    const btn = itemEl.querySelector(selectors.artifactMoreButton);
     if (!btn) return false;
 
     btn.click();
@@ -238,32 +240,6 @@
         NLE.log('Notebook menu not found:', payload);
         return;
       }
-
-      const x0 = typeof payload.x === 'number' && Number.isFinite(payload.x) ? payload.x : null;
-      const y0 = typeof payload.y === 'number' && Number.isFinite(payload.y) ? payload.y : null;
-      if (x0 === null || y0 === null) return;
-
-      void (async () => {
-        const panel = await waitForMenuPanel(800);
-        if (!panel) return;
-        const pane = panel.closest('.cdk-overlay-pane');
-        if (!pane) return;
-
-        const frameRect = state.frameEl?.getBoundingClientRect?.();
-        const x = (frameRect?.left ?? 0) + x0;
-        const y = (frameRect?.top ?? 0) + y0;
-
-        // After initial render, we can clamp using the panel size.
-        const r = pane.getBoundingClientRect();
-        const margin = 8;
-        const left = Math.max(margin, Math.min(x - r.width / 2, window.innerWidth - r.width - margin));
-        const top = Math.max(margin, Math.min(y - 8, window.innerHeight - r.height - margin));
-
-        pane.style.left = `${Math.floor(left)}px`;
-        pane.style.top = `${Math.floor(top)}px`;
-        pane.style.transform = 'none';
-        pane.style.zIndex = '2147483000';
-      })();
 
       return;
     }
