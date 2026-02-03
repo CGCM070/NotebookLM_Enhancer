@@ -64,5 +64,35 @@
     "collapseFolder": "Collapse Folder",
     "options": "Options",
     "drag": "Drag"
+  },
+  "export": {
+    "preview": {
+      "title": "Export Note",
+      "words": "words",
+      "characters": "characters",
+      "contentPreview": "Preview"
+    },
+    "format": {
+      "label": "Export Format",
+      "pdf": "PDF",
+      "pdfDesc": "Document with formatting",
+      "markdown": "Markdown",
+      "markdownDesc": "Editable text format",
+      "html": "HTML",
+      "htmlDesc": "Web page format",
+      "txt": "Text",
+      "txtDesc": "Plain text only"
+    },
+    "options": {
+      "label": "Options",
+      "images": "Include images",
+      "citations": "Include citations",
+      "pageNumbers": "Add page numbers"
+    },
+    "estimatedSize": "Estimated size",
+    "button": {
+      "export": "Export",
+      "exporting": "Exporting"
+    }
   }
 }

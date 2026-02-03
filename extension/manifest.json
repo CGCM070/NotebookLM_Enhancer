@@ -49,6 +49,8 @@
         "content/export/formats/export-format-markdown.js",
         "content/export/formats/export-format-pdf.js",
         "content/export/export-ui.js",
+        "content/export/export-templates.js",
+        "content/export/export-preview-ui.js",
         "content/export/export-core.js",
         "content/main.js"
       ],

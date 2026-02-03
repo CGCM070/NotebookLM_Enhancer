@@ -64,5 +64,35 @@
     "collapseFolder": "Colapsar carpeta",
     "options": "Opciones",
     "drag": "Arrastrar"
+  },
+  "export": {
+    "preview": {
+      "title": "Exportar Nota",
+      "words": "palabras",
+      "characters": "caracteres",
+      "contentPreview": "Vista previa"
+    },
+    "format": {
+      "label": "Formato de exportación",
+      "pdf": "PDF",
+      "pdfDesc": "Documento con formato",
+      "markdown": "Markdown",
+      "markdownDesc": "Formato de texto editable",
+      "html": "HTML",
+      "htmlDesc": "Formato de página web",
+      "txt": "Texto",
+      "txtDesc": "Solo texto plano"
+    },
+    "options": {
+      "label": "Opciones",
+      "images": "Incluir imágenes",
+      "citations": "Incluir citas",
+      "pageNumbers": "Añadir números de página"
+    },
+    "estimatedSize": "Tamaño estimado",
+    "button": {
+      "export": "Exportar",
+      "exporting": "Exportando"
+    }
   }
 }

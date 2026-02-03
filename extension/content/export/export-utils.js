@@ -45,37 +45,6 @@
   }
 
   /**
-   * Show a temporary notification
-   * @param {string} message - The message to display
-   * @param {string} type - The type of notification ('success' | 'error' | 'info')
-   * @param {number} duration - Duration in milliseconds
-   */
-  function showNotification(message, type = 'info', duration = 3000) {
-    const notification = document.createElement('div');
-    notification.className = `nle-notification nle-notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
-      color: white;
-      font-size: 14px;
-      z-index: 10001;
-      animation: nle-notification-slide 0.3s ease;
-    `;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.style.animation = 'nle-notification-fade 0.3s ease';
-      setTimeout(() => notification.remove(), 300);
-    }, duration);
-  }
-
-  /**
    * Format bytes to human readable format
    * @param {number} bytes - Number of bytes
    * @param {number} decimals - Number of decimal places
@@ -111,48 +80,12 @@
     };
   }
 
-  /**
-   * Add notification styles if not already present
-   */
-  function addNotificationStyles() {
-    if (document.getElementById('nle-notification-styles')) return;
-
-    const style = document.createElement('style');
-    style.id = 'nle-notification-styles';
-    style.textContent = `
-      @keyframes nle-notification-slide {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-      
-      @keyframes nle-notification-fade {
-        from {
-          opacity: 1;
-        }
-        to {
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  // Add styles on module load
-  addNotificationStyles();
-
   // Export module
   NLE.exportUtils = {
     downloadFile: downloadFile,
-    showNotification: showNotification,
     formatBytes: formatBytes,
     debounce: debounce,
   };
 
   NLE.log('Export utils module loaded');
-})();
+})()();

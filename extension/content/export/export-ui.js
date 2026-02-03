@@ -8,23 +8,8 @@
   'use strict';
   
   const NLE = (window.__NLE__ = window.__NLE__ || {});
-  const { exportButtonId, exportMenuId } = NLE.constants;
+  const { exportButtonId } = NLE.constants;
   const { t } = NLE.exportI18n;
-
-  // Track current menu state
-  let currentMenu = null;
-  let currentButton = null;
-
-  /**
-   * Available export formats
-   * @type {Array<{id: string, module: string, icon: string, labelKey: string}>}
-   */
-  const exportFormats = [
-    { id: 'pdf', module: 'exportFormatPDF', icon: 'picture_as_pdf', labelKey: 'pdf' },
-    { id: 'markdown', module: 'exportFormatMarkdown', icon: 'description', labelKey: 'markdown' },
-    { id: 'html', module: 'exportFormatHTML', icon: 'code', labelKey: 'html' },
-    { id: 'txt', module: 'exportFormatTXT', icon: 'article', labelKey: 'txt' },
-  ];
 
   /**
    * Create the export button element
@@ -48,123 +33,23 @@
 
     button.addEventListener('click', (e) => {
       e.stopPropagation();
-      toggleExportMenu(button);
+      handleExportButtonClick();
     });
 
     return button;
   }
 
   /**
-   * Create the export menu element
-   * @returns {HTMLDivElement} The export menu
+   * Handle export button click - goes directly to preview
    */
-  function createExportMenu() {
-    const menu = document.createElement('div');
-    menu.id = exportMenuId;
-    menu.className = 'nle-export-menu';
-
-    exportFormats.forEach(({ id, icon, labelKey }, index) => {
-      // Add divider before last item for visual separation
-      if (index === exportFormats.length - 1 && exportFormats.length > 1) {
-        const divider = document.createElement('div');
-        divider.className = 'nle-export-menu-divider';
-        menu.appendChild(divider);
-      }
-
-      const item = document.createElement('button');
-      item.className = 'nle-export-menu-item';
-      item.dataset.format = id;
-      item.dataset.testid = `export-format-${id}`;
-
-      item.innerHTML = `
-        <span class="material-symbols-outlined">${icon}</span>
-        <span>${t(labelKey)}</span>
-      `;
-
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        handleExportClick(id);
-      });
-
-      menu.appendChild(item);
-    });
-
-    return menu;
-  }
-
-  /**
-   * Toggle export menu visibility
-   * @param {HTMLElement} button - The button that triggered the toggle
-   */
-  function toggleExportMenu(button) {
-    // Close existing menu if different button
-    if (currentMenu && currentButton !== button) {
-      hideExportMenu();
-    }
-
-    let menu = document.getElementById(exportMenuId);
-
-    if (!menu) {
-      menu = createExportMenu();
-      button.appendChild(menu);
-      currentMenu = menu;
-      currentButton = button;
-    }
-
-    const isVisible = menu.style.display !== 'none' && menu.style.display !== '';
-    
-    if (isVisible) {
-      hideExportMenu();
+  function handleExportButtonClick() {
+    // Show preview modal directly (no intermediate menu)
+    if (NLE.exportPreviewUI && typeof NLE.exportPreviewUI.show === 'function') {
+      NLE.exportPreviewUI.show('pdf'); // Default to PDF, user can change in preview
     } else {
-      menu.style.display = 'block';
-      setupOutsideClickHandler(button, menu);
+      // Fallback to direct export if preview UI not available
+      console.error('[NLE Export] Preview UI not available');
     }
-  }
-
-  /**
-   * Hide the export menu
-   */
-  function hideExportMenu() {
-    const menu = document.getElementById(exportMenuId);
-    if (menu) {
-      menu.style.display = 'none';
-    }
-    currentMenu = null;
-    currentButton = null;
-  }
-
-  /**
-   * Setup click outside handler to close menu
-   * @param {HTMLElement} button - The export button
-   * @param {HTMLElement} menu - The export menu
-   */
-  function setupOutsideClickHandler(button, menu) {
-    const closeHandler = (e) => {
-      if (!button.contains(e.target)) {
-        hideExportMenu();
-        document.removeEventListener('click', closeHandler);
-      }
-    };
-
-    // Small delay to avoid immediate close
-    setTimeout(() => {
-      document.addEventListener('click', closeHandler, { once: true });
-    }, 0);
-  }
-
-  /**
-   * Handle export format click
-   * @param {string} formatId - The format ID to export
-   */
-  function handleExportClick(formatId) {
-    hideExportMenu();
-    
-    // Dispatch event for core module to handle
-    const event = new CustomEvent('nle-export-request', {
-      detail: { format: formatId },
-      bubbles: true,
-    });
-    document.dispatchEvent(event);
   }
 
   /**
@@ -176,7 +61,6 @@
       button.remove();
       NLE.log('Export button removed');
     }
-    hideExportMenu();
   }
 
   /**
@@ -219,34 +103,12 @@
     return true;
   }
 
-  /**
-   * Set button loading state
-   * @param {boolean} loading - Whether button is in loading state
-   */
-  function setButtonLoading(loading) {
-    const button = document.getElementById(exportButtonId);
-    if (!button) return;
-
-    if (loading) {
-      button.classList.add('nle-export-loading');
-      button.disabled = true;
-    } else {
-      button.classList.remove('nle-export-loading');
-      button.disabled = false;
-    }
-  }
-
   // Export module
   NLE.exportUI = {
     createExportButton: createExportButton,
-    createExportMenu: createExportMenu,
-    toggleExportMenu: toggleExportMenu,
-    hideExportMenu: hideExportMenu,
     injectExportButton: injectExportButton,
     removeExportButton: removeExportButton,
-    setButtonLoading: setButtonLoading,
-    exportFormats: exportFormats,
   };
 
-  NLE.log('Export UI module loaded');
+  NLE.log('Export UI module loaded (simplified - direct to preview)');
 })();

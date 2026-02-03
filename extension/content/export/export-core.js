@@ -33,10 +33,6 @@
       
       if (!content) {
         console.error('[NLE Export] No content available for export');
-        NLE.exportUtils.showNotification(
-          NLE.exportI18n.t('exportError'),
-          'error'
-        );
         return;
       }
 
@@ -47,20 +43,12 @@
       
       if (formatModule && typeof formatModule.export === 'function') {
         await formatModule.export(content);
-        NLE.exportUtils.showNotification(
-          `Exported: ${content.title}.${formatModule.extension}`,
-          'success'
-        );
       } else {
         throw new Error(`Unknown export format: ${format}`);
       }
     } catch (err) {
       console.error('[NLE Export] Export failed:', err);
       NLE.log('Export failed:', err);
-      NLE.exportUtils.showNotification(
-        NLE.exportI18n.t('exportError'),
-        'error'
-      );
     } finally {
       NLE.exportUI.setButtonLoading(false);
     }

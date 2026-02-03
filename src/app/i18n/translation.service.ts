@@ -19,12 +19,26 @@ export class TranslationService {
       const module = await import(`./${lang}.json`);
       this.translations = module.default as Translations;
       this.currentLang.next(lang);
+      
+      // Notify content script of language change
+      this.notifyContentScript(lang);
     } catch (error) {
       console.error(`Failed to load language: ${lang}`, error);
       // Fallback to English
       if (lang !== 'en') {
         await this.loadLanguage('en');
       }
+    }
+  }
+
+  private notifyContentScript(lang: Language): void {
+    try {
+      window.parent.postMessage({
+        type: 'NLE_CHANGE_LANGUAGE',
+        payload: { lang }
+      }, '*');
+    } catch (error) {
+      console.error('Failed to notify content script of language change:', error);
     }
   }
 

@@ -46,12 +46,35 @@
   }
 
   /**
+   * Wait for library to be available on window with retry
+   * @param {string} libName - Library name to check on window
+   * @param {number} maxRetries - Maximum retry attempts
+   * @returns {Promise<void>}
+   */
+  async function waitForLibrary(libName, maxRetries = 10) {
+    for (let i = 0; i < maxRetries; i++) {
+      if (typeof window[libName] !== 'undefined') {
+        return;
+      }
+      // Wait 100ms before checking again
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    throw new Error(`${libName} not available after ${maxRetries} retries`);
+  }
+
+  /**
    * Load PDF export libraries (pdfmake + html-to-pdfmake)
    * @returns {Promise<boolean>} True if all libraries loaded successfully
    */
   async function loadPdfLibraries() {
     if (pdfMakeLoaded && htmlToPdfMakeLoaded && vfsFontsLoaded) {
-      return true;
+      // Double-check they're actually available
+      if (typeof window.pdfMake !== 'undefined' && typeof window.htmlToPdfmake !== 'undefined') {
+        return true;
+      }
+      // Reset if not actually available
+      NLE.log('PDF libraries flagged as loaded but not available, reloading...');
+      resetLibraryState();
     }
 
     try {
@@ -60,22 +83,28 @@
       // Load pdfmake first
       if (!pdfMakeLoaded) {
         await loadScript(`${extensionUrl}lib/pdfmake.min.js`);
+        await waitForLibrary('pdfMake', 15);
         pdfMakeLoaded = true;
+        NLE.log('pdfMake loaded and verified');
       }
 
       // Load vfs_fonts
       if (!vfsFontsLoaded) {
         await loadScript(`${extensionUrl}lib/vfs_fonts.min.js`);
+        await waitForLibrary('pdfMake', 5); // vfs_fonts extends pdfMake
         vfsFontsLoaded = true;
+        NLE.log('vfs_fonts loaded');
       }
 
       // Load html-to-pdfmake
       if (!htmlToPdfMakeLoaded) {
         await loadScript(`${extensionUrl}lib/html-to-pdfmake.min.js`);
+        await waitForLibrary('htmlToPdfmake', 10);
         htmlToPdfMakeLoaded = true;
+        NLE.log('htmlToPdfmake loaded and verified');
       }
 
-      // Verify libraries are available
+      // Final verification
       if (typeof window.pdfMake === 'undefined') {
         throw new Error('pdfmake not available after loading');
       }
@@ -84,7 +113,7 @@
         throw new Error('html-to-pdfmake not available after loading');
       }
 
-      NLE.log('All PDF libraries loaded successfully');
+      NLE.log('All PDF libraries loaded and verified successfully');
       return true;
     } catch (err) {
       NLE.log('Failed to load PDF libraries:', err);

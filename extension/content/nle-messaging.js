@@ -293,5 +293,15 @@
       }
       return;
     }
+
+    // Handle language change request
+    if (data.type === 'NLE_CHANGE_LANGUAGE') {
+      const lang = data.payload?.lang;
+      if (lang && typeof NLE.exportI18n?.setLanguage === 'function') {
+        NLE.exportI18n.setLanguage(lang);
+        NLE.log('Language changed to:', lang);
+      }
+      return;
+    }
   });
 })();
