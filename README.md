@@ -187,15 +187,30 @@ This isn't a simple content script that adds a few buttons. It's a full micro-fr
 - Select the folder: `dist/extension/browser/`
 - The extension icon should appear in your toolbar!
 
-**Windows users (prebuilt ZIP)**
+**Windows Users: Build Requirements**
 
-- If you encounter build/compilation issues on Windows, a prebuilt, ready-to-load extension archive is included in the repository root: `NotebookLM_Enhancer/NotebookLM_Extension.zip`.
-- To use it:
-  1. Extract `NotebookLM_Extension.zip` to a folder (for example `NotebookLM_Extension/`).
-  2. Open `chrome://extensions/` in Chrome, enable Developer mode, click "Load unpacked" and select the extracted folder (the folder must contain `manifest.json` and the extension files).
-  3. The extension should load without building from source.
+**Prerequisites for Building:**
+- **Node.js 64-bit (x64)** is required. Tailwind CSS v4 uses LightningCSS which does not support 32-bit Windows.
+- Verify your Node.js architecture: `node -p "process.arch"` should print `x64`
 
-- If you prefer to rebuild on Windows, consider using WSL2, Git Bash, or a Linux container to run `npm install` and `npm run build:ext` (Node.js 18+ and npm 9+ recommended).
+**Common Error:**
+If you see `Error: Cannot find module '../lightningcss.win32-ia32-msvc.node'`, you are using 32-bit Node.js. Download the 64-bit version from [nodejs.org](https://nodejs.org/).
+
+**Quick Solution - Use Prebuilt ZIP:**
+A ready-to-load extension archive is included: `NotebookLM_Extension.zip`
+
+1. Extract `NotebookLM_Extension.zip` to a folder
+2. Open `chrome://extensions/` in Chrome
+3. Enable "Developer mode" (toggle top right)
+4. Click "Load unpacked" and select the extracted folder
+5. The extension loads without building from source
+
+**Alternative Solutions:**
+- **Install Node.js 64-bit** - Download x64 version from nodejs.org (recommended)
+- **Use WSL2** - Run `npm install` and `npm run build:ext` in Windows Subsystem for Linux
+- **Git Bash** - Some users have success using Git Bash for the build process
+
+*Node.js 18+ and npm 9+ recommended for all build methods*
 
 5. **Use it:**
    - Navigate to [notebooklm.google.com](https://notebooklm.google.com)
