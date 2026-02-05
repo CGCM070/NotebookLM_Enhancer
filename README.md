@@ -275,8 +275,9 @@ NotebookLM_Enhancer/
 │   │   ├── models/     # TypeScript Models
 │   │   └── i18n/       # Translations (EN/ES)
 │   └── styles.css      # Global styles
-├── dist/               # Build output
-└── package.json        # Dependencies and scripts
+├── dist/                      # Build output
+├── NotebookLM_Extension.zip   # Prebuilt extension (no build required)
+└── package.json               # Dependencies and scripts
 ```
 
 ---
