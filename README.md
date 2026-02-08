@@ -95,11 +95,13 @@ NotebookLM Enhancer injects a complete folder management system directly into No
 
 **Batch Delete**
 - Select multiple notes at once with checkboxes
-- "Selection Mode" toggle in header
+- "Selection Mode" toggle with "delete_sweep" icon in header
+- Position-based selection (indexes) - selection persists even when creating new notes
 - Click any row to toggle selection
 - Progress indicator during deletion ("Deleting 2/5...")
 - ESC key to cancel selection mode
 - Confirmation modal before deleting
+- Automatic confirmation of NotebookLM's native delete modal - no manual interaction needed
 
 **Robust Architecture**
 - Chrome Extension MV3 (latest manifest version)

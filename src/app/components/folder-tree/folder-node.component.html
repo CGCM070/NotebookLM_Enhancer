@@ -87,7 +87,7 @@
         [cdkDropListSortingDisabled]="true"
         [cdkDropListEnterPredicate]="onlySelfEnter"
       >
-        @for (nb of notebooks; track nb.key) {
+        @for (nb of notebooks; track nb.index) {
           <app-notebook-item
             [notebook]="nb"
             [isBatchMode]="isBatchMode"
@@ -110,7 +110,7 @@
             [notebookFolderByKey]="notebookFolderByKey"
             [notebookFolderByTitle]="notebookFolderByTitle"
             [isBatchMode]="isBatchMode"
-            [selectedKeys]="selectedKeys"
+            [selectedIndexes]="selectedIndexes"
             (toggleFolder)="toggleFolder.emit($event)"
             (createSubfolder)="createSubfolder.emit($event)"
             (renameFolder)="renameFolder.emit($event)"

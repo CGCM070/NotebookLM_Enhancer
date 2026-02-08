@@ -57,7 +57,7 @@ export class AppComponent implements OnDestroy {
   // Batch selection
   readonly isBatchMode$: Observable<boolean>;
   readonly selectedCount$: Observable<number>;
-  selectedKeys: Set<string> = new Set();
+  selectedIndexes: Set<number> = new Set();
   isBatchMode = false;
 
   // Batch delete progress
@@ -197,8 +197,8 @@ export class AppComponent implements OnDestroy {
       })
     );
     this.subs.add(
-      this.batchSelection.selectedKeys$.subscribe((keys) => {
-        this.selectedKeys = keys;
+      this.batchSelection.selectedIndexes$.subscribe((indexes) => {
+        this.selectedIndexes = indexes;
       })
     );
     
@@ -468,14 +468,14 @@ export class AppComponent implements OnDestroy {
    * Handle notebook selection toggle in batch mode
    */
   onNotebookSelectionToggle(nb: NotebookItem): void {
-    this.batchSelection.toggleSelection(nb.key);
+    this.batchSelection.toggleSelection(nb.index);
   }
 
   /**
    * Check if a notebook is selected
    */
   isNotebookSelected(notebook: NotebookItem): boolean {
-    return this.selectedKeys.has(notebook.key);
+    return this.selectedIndexes.has(notebook.index);
   }
 
   /**
@@ -489,11 +489,14 @@ export class AppComponent implements OnDestroy {
    * Execute batch delete of selected notebooks
    */
   async executeBatchDelete(): Promise<void> {
-    const selectedKeys = this.batchSelection.getSelectedKeysArray();
-    if (selectedKeys.length === 0) return;
+    const selectedIndexes = this.batchSelection.getSelectedIndexesArray();
+    if (selectedIndexes.length === 0) return;
 
-    // Get selected notebooks with full data
-    const selectedNotebooks = this.notebooks.filter(nb => selectedKeys.includes(nb.key));
+    // Get selected notebooks with full data using indexes
+    const selectedNotebooks = selectedIndexes
+      .map(index => this.notebooks.find(nb => nb.index === index))
+      .filter((nb): nb is NotebookItem => nb !== undefined);
+
     if (selectedNotebooks.length === 0) return;
 
     // Show confirmation modal

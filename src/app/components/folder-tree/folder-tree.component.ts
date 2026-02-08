@@ -24,7 +24,7 @@ export class FolderTreeComponent {
   @Input() notebookFolderByKey: Record<string, string | null> = {};
   @Input() notebookFolderByTitle: Record<string, string | null> = {};
   @Input() isBatchMode = false;
-  @Input() selectedKeys: Set<string> = new Set();
+  @Input() selectedIndexes: Set<number> = new Set();
 
   @Output() toggleFolder = new EventEmitter<Folder>();
   @Output() createSubfolder = new EventEmitter<Folder>();
@@ -37,6 +37,6 @@ export class FolderTreeComponent {
   @Output() notebookSelectionToggle = new EventEmitter<NotebookItem>();
 
   isNotebookSelected(notebook: NotebookItem): boolean {
-    return this.selectedKeys.has(notebook.key);
+    return this.selectedIndexes.has(notebook.index);
   }
 }

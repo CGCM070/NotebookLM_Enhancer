@@ -4,18 +4,18 @@
 </div>
 } @else {
 @for (node of tree; track node.folder.id) {
-<app-folder-node 
-  [node]="node" 
-  [depth]="0" 
-  [folders]="folders" 
+<app-folder-node
+  [node]="node"
+  [depth]="0"
+  [folders]="folders"
   [notebooksByFolderId]="notebooksByFolderId"
-  [notebookFolderByKey]="notebookFolderByKey" 
+  [notebookFolderByKey]="notebookFolderByKey"
   [notebookFolderByTitle]="notebookFolderByTitle"
   [isBatchMode]="isBatchMode"
-  [selectedKeys]="selectedKeys"
-  (toggleFolder)="toggleFolder.emit($event)" 
+  [selectedIndexes]="selectedIndexes"
+  (toggleFolder)="toggleFolder.emit($event)"
   (createSubfolder)="createSubfolder.emit($event)"
-  (renameFolder)="renameFolder.emit($event)" 
+  (renameFolder)="renameFolder.emit($event)"
   (deleteFolder)="deleteFolder.emit($event)"
   (openNotebook)="openNotebook.emit($event)"
   (openNotebookMenu)="openNotebookMenu.emit($event)"

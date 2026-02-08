@@ -5,13 +5,13 @@ import { map } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class BatchSelectionService {
   private readonly _isBatchMode$ = new BehaviorSubject<boolean>(false);
-  private readonly _selectedKeys$ = new BehaviorSubject<Set<string>>(new Set());
+  private readonly _selectedIndexes$ = new BehaviorSubject<Set<number>>(new Set());
 
   readonly isBatchMode$: Observable<boolean> = this._isBatchMode$.asObservable();
-  readonly selectedKeys$: Observable<Set<string>> = this._selectedKeys$.asObservable();
-  
-  readonly selectedCount$ = this._selectedKeys$.pipe(
-    map(keys => keys.size)
+  readonly selectedIndexes$: Observable<Set<number>> = this._selectedIndexes$.asObservable();
+
+  readonly selectedCount$ = this._selectedIndexes$.pipe(
+    map(indexes => indexes.size)
   );
 
   get isBatchMode(): boolean {
@@ -19,21 +19,21 @@ export class BatchSelectionService {
   }
 
   get selectedCount(): number {
-    return this._selectedKeys$.value.size;
+    return this._selectedIndexes$.value.size;
   }
 
-  get selectedKeys(): Set<string> {
-    return new Set(this._selectedKeys$.value);
+  get selectedIndexes(): Set<number> {
+    return new Set(this._selectedIndexes$.value);
   }
 
-  isSelected(key: string): boolean {
-    return this._selectedKeys$.value.has(key);
+  isSelected(index: number): boolean {
+    return this._selectedIndexes$.value.has(index);
   }
 
   toggleBatchMode(): void {
     const newMode = !this._isBatchMode$.value;
     this._isBatchMode$.next(newMode);
-    
+
     if (!newMode) {
       this.clearSelection();
     }
@@ -48,35 +48,60 @@ export class BatchSelectionService {
     this.clearSelection();
   }
 
-  toggleSelection(key: string): void {
-    const current = new Set(this._selectedKeys$.value);
-    
-    if (current.has(key)) {
-      current.delete(key);
+  toggleSelection(index: number): void {
+    const current = new Set(this._selectedIndexes$.value);
+
+    if (current.has(index)) {
+      current.delete(index);
     } else {
-      current.add(key);
+      current.add(index);
     }
-    
-    this._selectedKeys$.next(current);
+
+    this._selectedIndexes$.next(current);
   }
 
-  select(key: string): void {
-    const current = new Set(this._selectedKeys$.value);
-    current.add(key);
-    this._selectedKeys$.next(current);
+  select(index: number): void {
+    const current = new Set(this._selectedIndexes$.value);
+    current.add(index);
+    this._selectedIndexes$.next(current);
   }
 
-  deselect(key: string): void {
-    const current = new Set(this._selectedKeys$.value);
-    current.delete(key);
-    this._selectedKeys$.next(current);
+  deselect(index: number): void {
+    const current = new Set(this._selectedIndexes$.value);
+    current.delete(index);
+    this._selectedIndexes$.next(current);
   }
 
   clearSelection(): void {
-    this._selectedKeys$.next(new Set());
+    this._selectedIndexes$.next(new Set());
   }
 
-  getSelectedKeysArray(): string[] {
-    return Array.from(this._selectedKeys$.value);
+  getSelectedIndexesArray(): number[] {
+    return Array.from(this._selectedIndexes$.value);
+  }
+
+  /**
+   * Adjust indexes after items are deleted from the list
+   * When items with lower indexes are removed, higher indexes need to be decremented
+   * @param deletedIndexes Array of indexes that were deleted (sorted in ascending order)
+   */
+  adjustIndexesAfterDeletion(deletedIndexes: number[]): void {
+    if (deletedIndexes.length === 0) return;
+
+    const current = new Set(this._selectedIndexes$.value);
+    const adjusted = new Set<number>();
+
+    for (const index of current) {
+      // Count how many deleted indexes are below this index
+      const deletedBelow = deletedIndexes.filter(d => d < index).length;
+      const newIndex = index - deletedBelow;
+
+      // Only keep the index if it wasn't deleted
+      if (!deletedIndexes.includes(index)) {
+        adjusted.add(newIndex);
+      }
+    }
+
+    this._selectedIndexes$.next(adjusted);
   }
 }
