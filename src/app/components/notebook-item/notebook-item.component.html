@@ -13,7 +13,7 @@
     [class.cursor-pointer]="isBatchMode"
     (click)="onRowClick($event)"
   >
-    @if (isBatchMode) {
+    @if (isBatchMode && !isDeletingBatch) {
       <button
         type="button"
         class="nle-batch-checkbox flex h-5 w-5 items-center justify-center rounded border-2 transition-colors shrink-0"
@@ -31,6 +31,9 @@
           </svg>
         }
       </button>
+    } @else if (isDeletingBatch) {
+      <!-- Empty spacer during batch delete to maintain layout -->
+      <div class="w-5"></div>
     } @else {
       <div
         class="flex cursor-move items-center justify-center text-gray-400 dark:text-[#5F6368] opacity-0 transition-opacity group-hover:opacity-100"

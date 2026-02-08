@@ -28,6 +28,7 @@ export class FolderNodeComponent {
   @Input() notebookFolderByTitle: Record<string, string | null> = {};
   @Input() isBatchMode = false;
   @Input() selectedIndexes: Set<number> = new Set();
+  @Input() isDeletingBatch = false;
 
   @Output() toggleFolder = new EventEmitter<Folder>();
   @Output() createSubfolder = new EventEmitter<Folder>();

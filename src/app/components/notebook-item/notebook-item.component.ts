@@ -14,6 +14,7 @@ export class NotebookItemComponent {
   @Input({ required: true }) notebook!: Notebook;
   @Input() isBatchMode = false;
   @Input() isSelected = false;
+  @Input() isDeletingBatch = false;
 
   @Output() open = new EventEmitter<Notebook>();
   @Output() openMenu = new EventEmitter<NotebookMenuRequest>();
