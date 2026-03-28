@@ -1,4 +1,4 @@
-# NotebookLM Enhancer  -  Needs Act. 24/03/2026
+# NotebookLM Enhancer
 **GitHub Copilot CLI Challenge**
 
 
