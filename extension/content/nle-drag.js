@@ -132,16 +132,16 @@
      * Setup draggable attribute and dragstart handler on native note elements.
      */
     NLE.setupNativeDrag = function setupNativeDrag() {
-        const notes = document.querySelectorAll('artifact-library-note');
+    const notes = document.querySelectorAll('artifact-library-note, artifact-library-item');
 
-        for (const note of notes) {
-            // Skip if inside our widget host
-            if (note.closest(`#${extensionHostId}`)) continue;
+    for (const note of notes) {
+      // Skip if inside our widget host
+      if (note.closest(`#${extensionHostId}`)) continue;
 
-            // Skip if already set up
-            if (setupNotes.has(note)) continue;
+      // Skip if already set up
+      if (setupNotes.has(note)) continue;
 
-            const titleEl = note.querySelector(selectors.artifactTitle);
+      const titleEl = note.querySelector(selectors.artifactTitle);
             if (!titleEl) continue;
 
             const el = /** @type {HTMLElement} */ (note);
@@ -184,8 +184,8 @@
      * Hide or show native notes based on folder assignments.
      * @param {Record<string, string>} folderByTitle - Map of title -> folderId
      */
-    NLE.updateNativeNoteVisibility = function updateNativeNoteVisibility(folderByTitle) {
-        const notes = document.querySelectorAll('artifact-library-note');
+  NLE.updateNativeNoteVisibility = function updateNativeNoteVisibility(folderByTitle) {
+    const notes = document.querySelectorAll('artifact-library-note, artifact-library-item');
 
         for (const note of notes) {
             // Skip if inside our widget host

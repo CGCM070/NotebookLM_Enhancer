@@ -23,7 +23,7 @@
       artifactList: '.artifact-library-container',
       artifactTitle: '.artifact-title',
       artifactDetails: '.artifact-details',
-      artifactButton: 'button.artifact-button-content',
+      artifactButton: 'button.artifact-stretched-button',
       artifactMoreButton: 'button.artifact-more-button',
       // Note view selectors (when viewing note content) - must be within studio-panel
       studioPanelHeader: 'section.studio-panel .panel-header',

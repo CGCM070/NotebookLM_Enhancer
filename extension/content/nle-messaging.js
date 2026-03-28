@@ -220,7 +220,12 @@
     const match = Array.from(titleEls).find((el) => (el.textContent ?? '').trim() === title);
     if (!match) return false;
 
-    const button = match.closest(selectors.artifactButton) ?? match.closest('button');
+    // Buscar el item container (tanto note como item)
+    const itemEl = match.closest('artifact-library-note, artifact-library-item');
+    if (!itemEl) return false;
+
+    // Buscar el botón dentro del container
+    const button = itemEl.querySelector(selectors.artifactButton) ?? itemEl.querySelector('button.mat-mdc-button');
     if (!button) return false;
 
     button.click();
@@ -235,7 +240,12 @@
     const el = titleEls.item(index);
     if (!el) return false;
 
-    const button = el.closest(selectors.artifactButton) ?? el.closest('button');
+    // Buscar el item container (tanto note como item)
+    const itemEl = el.closest('artifact-library-note, artifact-library-item');
+    if (!itemEl) return false;
+
+    // Buscar el botón dentro del container
+    const button = itemEl.querySelector(selectors.artifactButton) ?? itemEl.querySelector('button.mat-mdc-button');
     if (!button) return false;
 
     button.click();
