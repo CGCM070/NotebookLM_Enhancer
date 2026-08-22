@@ -1,4 +1,6 @@
-# NotebookLM Enhancer | Needs Update – 22 August 2026 | Project in Standby**GitHub Copilot CLI Challenge**
+# NotebookLM Enhancer | Needs Update – 22 August 2026 | Project in Standby
+
+**GitHub Copilot CLI Challenge**
 
 
 [![Chrome Extension](https://img.shields.io/badge/Chrome%20Extension-MV3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
