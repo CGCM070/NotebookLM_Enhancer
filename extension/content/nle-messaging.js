@@ -17,6 +17,47 @@
     return (value ?? '').toString().replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  function findNativeAddNoteButton() {
+    const explicit = document.querySelector(
+      '.add-note-button-container .add-note-button, ' +
+      '[data-testid*="add-note" i], [data-testid*="new-note" i], ' +
+      'button[aria-label*="add note" i], button[aria-label*="new note" i], ' +
+      'button[aria-label*="create note" i], [role="button"][aria-label*="new note" i]'
+    );
+    if (explicit) return explicit;
+
+    const candidates = document.querySelectorAll('button, [role="button"]');
+    return Array.from(candidates).find((candidate) => {
+      if (candidate.closest(`#${NLE.constants.extensionHostId}`)) return false;
+      const label = normalizeText(
+        candidate.getAttribute('aria-label') ||
+        candidate.getAttribute('title') ||
+        candidate.textContent
+      );
+      return /^(add|new|create)\s+(a\s+)?note\b/.test(label) ||
+        /^(añadir|nueva|crear)\s+(una\s+)?nota\b/.test(label);
+    }) || null;
+  }
+
+  function getArtifactItemFromTitle(titleEl) {
+    return titleEl.closest(
+      'artifact-library-note, artifact-library-item, ' +
+      '[data-testid*="artifact" i], [class*="artifact-library"]'
+    ) || titleEl.parentElement?.parentElement || null;
+  }
+
+  function findArtifactButton(itemEl, selector, labelPattern) {
+    return itemEl.querySelector(selector) ||
+      Array.from(itemEl.querySelectorAll('button, [role="button"]')).find((button) => {
+        const label = normalizeText(
+          button.getAttribute('aria-label') ||
+          button.getAttribute('title') ||
+          button.textContent
+        );
+        return labelPattern.test(label);
+      }) || null;
+  }
+
   function getLatestMenuPanel() {
     const container = document.querySelector('.cdk-overlay-container');
     if (!container) return null;
@@ -221,11 +262,15 @@
     if (!match) return false;
 
     // Buscar el item container (tanto note como item)
-    const itemEl = match.closest('artifact-library-note, artifact-library-item');
+    const itemEl = getArtifactItemFromTitle(match);
     if (!itemEl) return false;
 
     // Buscar el botón dentro del container
-    const button = itemEl.querySelector(selectors.artifactButton) ?? itemEl.querySelector('button.mat-mdc-button');
+    const button = findArtifactButton(
+      itemEl,
+      selectors.artifactButton,
+      /^(open|view|abrir|ver)\b/
+    ) ?? itemEl.querySelector('button.mat-mdc-button');
     if (!button) return false;
 
     button.click();
@@ -241,11 +286,15 @@
     if (!el) return false;
 
     // Buscar el item container (tanto note como item)
-    const itemEl = el.closest('artifact-library-note, artifact-library-item');
+    const itemEl = getArtifactItemFromTitle(el);
     if (!itemEl) return false;
 
     // Buscar el botón dentro del container
-    const button = itemEl.querySelector(selectors.artifactButton) ?? itemEl.querySelector('button.mat-mdc-button');
+    const button = findArtifactButton(
+      itemEl,
+      selectors.artifactButton,
+      /^(open|view|abrir|ver)\b/
+    ) ?? itemEl.querySelector('button.mat-mdc-button');
     if (!button) return false;
 
     button.click();
@@ -261,10 +310,14 @@
     if (!match) return false;
 
     // Buscar tanto artifact-library-note (notas) como artifact-library-item (otros artefactos)
-    const itemEl = match.closest('artifact-library-note, artifact-library-item');
+    const itemEl = getArtifactItemFromTitle(match);
     if (!itemEl) return false;
 
-    const btn = itemEl.querySelector(selectors.artifactMoreButton);
+    const btn = findArtifactButton(
+      itemEl,
+      selectors.artifactMoreButton,
+      /(more|options|menu|más|opciones|menú)/
+    );
     if (!btn) return false;
 
     btn.click();
@@ -280,10 +333,14 @@
     if (!el) return false;
 
     // Buscar tanto artifact-library-note (notas) como artifact-library-item (otros artefactos)
-    const itemEl = el.closest('artifact-library-note, artifact-library-item');
+    const itemEl = getArtifactItemFromTitle(el);
     if (!itemEl) return false;
 
-    const btn = itemEl.querySelector(selectors.artifactMoreButton);
+    const btn = findArtifactButton(
+      itemEl,
+      selectors.artifactMoreButton,
+      /(more|options|menu|más|opciones|menú)/
+    );
     if (!btn) return false;
 
     btn.click();
@@ -530,9 +587,9 @@
     
     // Handle add note request
     if (data.type === messageTypeAddNote) {
-      const addNoteButton = document.querySelector('.add-note-button-container .add-note-button');
+      const addNoteButton = findNativeAddNoteButton();
       if (addNoteButton) {
-        addNoteButton.click();
+        /** @type {HTMLElement} */ (addNoteButton).click();
         NLE.log('Add note button clicked');
       } else {
         NLE.log('Add note button not found');

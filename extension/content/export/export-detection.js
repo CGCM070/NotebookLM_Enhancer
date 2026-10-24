@@ -15,9 +15,15 @@
    * @returns {boolean} True if note view is open
    */
   function isNoteViewOpen() {
-    // Check for note-editor specifically within the studio panel (right sidebar)
-    const noteEditor = document.querySelector(selectors.noteEditor);
-    return !!noteEditor;
+    return !!getNoteEditor();
+  }
+
+  function isVisible(element) {
+    if (!element) return false;
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' &&
+      rect.width > 0 && rect.height > 0;
   }
 
   /**
@@ -25,8 +31,28 @@
    * @returns {HTMLElement | null} The header element or null if not found
    */
   function getNoteViewHeader() {
-    // Get the header specifically from the studio panel (right sidebar)
-    return document.querySelector(selectors.studioPanelHeader);
+    const editor = getNoteEditor();
+    if (editor) {
+      const localHeader = editor.querySelector(
+        'header, .panel-header, [class*="panel-header"], [class*="note-header"], [class*="header"]'
+      );
+      if (localHeader) return localHeader;
+    }
+
+    const header = document.querySelector(selectors.studioPanelHeader);
+    if (header) return header;
+
+    const panel = document.querySelector(selectors.studioPanel);
+    const panelHeader = panel?.querySelector('header, [role="banner"], [class*="header"]');
+    if (panelHeader) return panelHeader;
+
+    const collapseButton = Array.from(document.querySelectorAll(selectors.noteCollapseButton))
+      .find(isVisible);
+    if (collapseButton) {
+      return collapseButton.closest('header, [role="banner"], [class*="header"]') ||
+        collapseButton.parentElement;
+    }
+    return null;
   }
 
   /**
@@ -34,7 +60,32 @@
    * @returns {HTMLElement | null} The note editor element
    */
   function getNoteEditor() {
-    return document.querySelector(selectors.noteEditor);
+    const editor = document.querySelector(selectors.noteEditor);
+    if (editor) return editor;
+
+    const panel = document.querySelector(selectors.studioPanel);
+    if (panel) {
+      // Newer builds may no longer expose the note-editor custom element.
+      const hasNoteContent = panel.querySelector(
+        selectors.noteDocViewer + ', ' +
+        selectors.noteViewContent + ', ' +
+        selectors.noteTitle + ', ' +
+        '[contenteditable="true"], textarea, [role="textbox"], form'
+      );
+      if (hasNoteContent) return panel;
+    }
+
+    // Last-resort fallback for builds that moved the note view outside the
+    // historical studio-panel container.
+    const hasNoteContent = document.querySelector(
+      selectors.noteDocViewer + ', ' +
+      selectors.noteViewContent + ', ' +
+      selectors.noteTitle + ', ' +
+      '[contenteditable="true"], textarea, [role="textbox"], form'
+    );
+    const hasVisibleClose = Array.from(document.querySelectorAll(selectors.noteCollapseButton))
+      .some(isVisible);
+    return hasNoteContent && hasVisibleClose ? document.body : null;
   }
 
   /**
@@ -45,6 +96,17 @@
     const header = getNoteViewHeader();
     if (!header) return null;
     return header.querySelector(selectors.noteCollapseButton);
+  }
+
+  function getNoteContentRoot() {
+    const editor = getNoteEditor();
+    if (!editor) return null;
+
+    return editor.querySelector(
+      selectors.noteDocViewer + ', ' +
+      selectors.noteViewContent + ', ' +
+      '[contenteditable="true"], textarea, [role="textbox"]'
+    ) || editor;
   }
 
   /**
@@ -107,6 +169,7 @@
     isNoteViewOpen: isNoteViewOpen,
     getNoteViewHeader: getNoteViewHeader,
     getNoteEditor: getNoteEditor,
+    getNoteContentRoot: getNoteContentRoot,
     getCollapseButton: getCollapseButton,
     getNoteMetadata: getNoteMetadata,
     isExportButtonInjected: isExportButtonInjected,

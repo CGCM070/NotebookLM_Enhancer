@@ -159,7 +159,6 @@ export class AppComponent implements OnDestroy {
       }
 
       if (data.type === 'NLE_DELETE_BATCH_COMPLETE') {
-        const payload = data.payload as { success?: boolean; deletedCount?: number; failedCount?: number };
         this.ngZone.run(() => {
           this.isDeletingBatch = false;
           this.batchSelection.disableBatchMode();

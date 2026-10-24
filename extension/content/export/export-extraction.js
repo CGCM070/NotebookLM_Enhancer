@@ -24,15 +24,17 @@
    */
   function extractNoteContent() {
     // Use the studio-panel specific selector
-    const noteEditor = document.querySelector(selectors.noteEditor);
+    const noteEditor = NLE.exportDetection.getNoteEditor();
     if (!noteEditor) return null;
 
     // Get title
     const titleInput = noteEditor.querySelector(selectors.noteTitle);
-    const title = titleInput?.value || titleInput?.textContent?.trim() || 'Untitled Note';
+    const title = titleInput?.value || titleInput?.textContent?.trim() ||
+      document.querySelector('h1, [role="heading"]')?.textContent?.trim() ||
+      'Untitled Note';
 
     // Get content viewer
-    const docViewer = noteEditor.querySelector(selectors.noteDocViewer);
+    const docViewer = NLE.exportDetection.getNoteContentRoot();
     if (!docViewer) {
       // Try to get form content directly
       const form = noteEditor.querySelector('form');
@@ -145,7 +147,7 @@
    * @returns {string | null} Raw HTML or null
    */
   function getRawHtml() {
-    const noteEditor = document.querySelector(selectors.noteEditor);
+    const noteEditor = NLE.exportDetection.getNoteEditor();
     if (!noteEditor) return null;
 
     const docViewer = noteEditor.querySelector(selectors.noteDocViewer);
