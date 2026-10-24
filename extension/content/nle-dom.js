@@ -8,7 +8,7 @@
     if (section) return section;
 
     // Fallback: tolerate changes (e.g. element type) as long as class survives.
-    return document.querySelector('.studio-panel');
+    return document.querySelector('.studio-panel, [data-testid="studio-panel"], [class~="studio-panel"]');
   }
 
   NLE.findPanelRoot = function findPanelRoot() {

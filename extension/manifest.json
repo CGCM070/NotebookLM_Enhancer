@@ -23,12 +23,14 @@
     "storage"
   ],
   "host_permissions": [
-    "https://notebooklm.google.com/*"
+    "https://notebooklm.google.com/*",
+    "https://notebook.google.com/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://notebooklm.google.com/*"
+        "https://notebooklm.google.com/*",
+        "https://notebook.google.com/*"
       ],
       "js": [
         "content/nle-constants.js",
@@ -70,7 +72,8 @@
         "content/styles.css"
       ],
       "matches": [
-        "https://notebooklm.google.com/*"
+        "https://notebooklm.google.com/*",
+        "https://notebook.google.com/*"
       ]
     }
   ]

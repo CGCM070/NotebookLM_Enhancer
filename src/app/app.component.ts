@@ -22,6 +22,11 @@ import { BatchSelectionService } from './services/batch-selection.service';
 
 type NotebookItem = Notebook;
 
+const NOTEBOOKLM_ORIGINS = new Set([
+  'https://notebooklm.google.com',
+  'https://notebook.google.com',
+]);
+
 @Component({
   selector: 'app-root',
   imports: [AsyncPipe, DragDropModule, FolderTreeComponent, NotebookItemComponent, ModalComponent, TranslatePipe],
@@ -99,7 +104,7 @@ export class AppComponent implements OnDestroy {
 
     this.onMessage = (event: MessageEvent) => {
       // Messages come from the NotebookLM page context via the content script.
-      if (event.origin !== 'https://notebooklm.google.com') return;
+      if (!NOTEBOOKLM_ORIGINS.has(event.origin)) return;
       if (!event.data || typeof event.data !== 'object') return;
 
       const data = event.data as { type?: unknown; payload?: unknown };

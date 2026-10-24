@@ -1,7 +1,4 @@
-# NotebookLM Enhancer | Needs Update – 22 August 2026 | Project in Standby
-
-**GitHub Copilot CLI Challenge**
-
+# NotebookLM Enhancer
 
 [![Chrome Extension](https://img.shields.io/badge/Chrome%20Extension-MV3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![Angular](https://img.shields.io/badge/Angular-19+-red.svg)](https://angular.io/)
@@ -121,7 +118,7 @@ This isn't a simple content script that adds a few buttons. It's a full micro-fr
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  NotebookLM Page (notebooklm.google.com)                │
+│  NotebookLM Page (notebook.google.com)                  │
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐    │
 │  │  Studio Panel (section.studio-panel)            │    │
@@ -225,7 +222,7 @@ A ready-to-load extension archive is included: `NotebookLM_Extension.zip`
 *Node.js 18+ and npm 9+ recommended for all build methods*
 
 5. **Use it:**
-   - Navigate to [notebooklm.google.com](https://notebooklm.google.com)
+   - Navigate to [NotebookLM](https://notebook.google.com)
    - Open any notebook
    - The extension will automatically inject the organized sidebar
    - Click the extension icon in the toolbar to toggle on/off
@@ -346,11 +343,9 @@ This ensures your "Work" folders don't mix with "Personal" research.
 
 ## Notes
 
-- The extension only activates on `notebooklm.google.com/*` pages
+- The extension activates on `notebook.google.com/*` and the legacy `notebooklm.google.com/*` pages
 - All data is stored locally in your browser (chrome.storage.sync)
 - No data is sent to any external servers
 - The native NotebookLM sidebar is hidden but still functional (needed for drag & drop and menus)
 
 ---
-
-**Built with love using GitHub Copilot CLI assistance**

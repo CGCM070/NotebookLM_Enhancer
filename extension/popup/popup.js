@@ -49,7 +49,11 @@
       updateUI(newState);
 
       // Notify all tabs
-      const tabs = await chrome.tabs.query({ url: 'https://notebooklm.google.com/*' });
+      const tabGroups = await Promise.all([
+        chrome.tabs.query({ url: 'https://notebooklm.google.com/*' }),
+        chrome.tabs.query({ url: 'https://notebook.google.com/*' }),
+      ]);
+      const tabs = [...new Map(tabGroups.flat().filter((tab) => tab.id).map((tab) => [tab.id, tab])).values()];
       tabs.forEach(tab => {
         if (tab.id) {
           chrome.tabs.sendMessage(tab.id, {
